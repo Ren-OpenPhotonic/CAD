@@ -10,7 +10,6 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181f;--pn:#1b212b;--ink:#e6e9ee;--mut:#8c95a3;--ln:#2e3644;--ac:#4fc0cf;--ac2:#f0a04b;--vp:#10141a;--sel:#1f3a42;--on:#10141a}}
 :root[data-theme="dark"]{--bg:#14181f;--pn:#1b212b;--ink:#e6e9ee;--mut:#8c95a3;--ln:#2e3644;--ac:#4fc0cf;--ac2:#f0a04b;--vp:#10141a;--sel:#1f3a42;--on:#10141a}
 *{box-sizing:border-box}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--ink);font:14px/1.5 "PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif}
 #app{display:flex;height:100%}
@@ -22,9 +21,8 @@ h1{font:600 20px ui-monospace,Menlo,monospace;margin:0}
 h2{font-size:14px;font-weight:600;margin:18px 0 8px;padding-top:12px;border-top:1px solid var(--ln);display:flex;justify-content:space-between;align-items:center}
 .sub,.hint{color:var(--mut);font-size:12px;margin:4px 0}
 label{display:block;font-size:12px;color:var(--mut);margin:8px 0 2px}
-input,select{width:100%;padding:6px 8px;border:1px solid var(--ln);border-radius:4px;background:var(--bg);color:var(--ink);font:inherit}
-input:focus-visible,select:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
-input:disabled,select:disabled{opacity:.6}
+input,select,textarea{width:100%;padding:6px 8px;border:1px solid var(--ln);border-radius:4px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
 .row{display:grid;gap:8px}.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:1fr 1fr 1fr}.c4{grid-template-columns:repeat(4,1fr)}
 .seg{display:flex;border:1px solid var(--ln);border-radius:4px;overflow:hidden}
 .seg label{flex:1;margin:0;text-align:center;padding:6px;cursor:pointer;color:var(--ink)}
@@ -34,25 +32,26 @@ button.pri{background:var(--ac);border-color:var(--ac);color:var(--on);font-weig
 button.wide{width:100%;margin-top:8px}
 .badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--ac2);color:#fff}
 .chip{padding:4px 8px;margin:4px 0;border-left:3px solid var(--ac);background:var(--sel);border-radius:0 4px 4px 0;font-size:12.5px}
-.tol{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dashed var(--ln)}
-details{margin-top:14px}pre{overflow:auto;font-size:11px;max-height:200px;background:var(--bg);padding:8px;border-radius:4px}
 .card{border:1px solid var(--ln);border-radius:6px;padding:8px;margin-bottom:10px}
-.card button{padding:5px 6px}.card button.pri{margin-top:10px;padding:9px}
 .req{margin-top:8px;padding:8px;border-radius:4px;background:var(--bg);border:1px solid var(--ln)}
-.req button{padding:4px 0}
-.ck{width:auto;margin:0 6px 0 0;vertical-align:-2px}
-.pair{border-color:var(--ac2)}
 .coord{margin:6px 0;padding:6px 8px;background:var(--bg);border-radius:4px;border:1px solid var(--ln)}
 .kv{display:flex;justify-content:space-between;gap:8px;font:12px/1.55 ui-monospace,Menlo,monospace}.kv span{color:var(--mut);flex:none}.kv b{font-weight:500;text-align:right}
 .it i{font-style:normal;color:var(--ac2);font-weight:700}.it.on i{color:#fff}
-/* floating feature tree */
+/* 设计树 */
 #ft{position:absolute;z-index:5;top:12px;left:12px;width:290px;max-width:calc(100% - 24px);max-height:calc(100% - 24px);display:flex;flex-direction:column;
 border:1px solid color-mix(in srgb,var(--ln) 80%,transparent);border-radius:8px;
-background:color-mix(in srgb,var(--pn) 58%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+background:color-mix(in srgb,var(--pn) 65%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 #fth{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;font-weight:600}
-#fth button{padding:2px 8px}
 #ftb{overflow-y:auto;padding:0 8px 8px}
 #ft.shut #ftb{display:none}
+#exbar{position:absolute;z-index:6;top:12px;right:12px;font-size:13px}
+#exbtn{background:color-mix(in srgb,var(--pn) 70%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-weight:600;padding:6px 12px}
+#exmenu{display:none;position:absolute;right:0;top:calc(100% + 4px);min-width:240px;padding:4px;border:1px solid var(--ln);border-radius:8px;
+background:color-mix(in srgb,var(--pn) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 24px #0003}
+#exbar.open #exmenu{display:block}
+#exmenu button{display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:6px;padding:8px 10px;margin:0}
+#exmenu button:hover{background:var(--sel)}
+#exmenu small{display:block;color:var(--mut);font-size:11px;font-weight:400}
 .ph{display:flex;align-items:center;gap:4px;margin-top:6px;font-weight:600;font-size:13px}
 .ph .pn{flex:1;cursor:pointer;padding:2px 6px;border-radius:4px}.ph .pn:hover{background:var(--sel)}
 .ph.ed .pn{background:var(--ac);color:var(--on)}
@@ -61,6 +60,14 @@ background:color-mix(in srgb,var(--pn) 58%,transparent);backdrop-filter:blur(12p
 .it{padding:2px 8px;margin-left:30px;border-left:2px solid var(--ln);cursor:pointer;border-radius:0 4px 4px 0;font-size:13px}
 .it:hover{background:var(--sel)}.it.on{background:var(--ac2);color:#fff;border-left-color:var(--ac2);font-weight:600}
 .dt{font-weight:700;margin-left:4px}
+/* 模态框 */
+#modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;backdrop-filter:blur(4px);align-items:center;justify-content:center}
+#modal-backdrop.open{display:flex}
+.modal{background:var(--pn);border:1px solid var(--ln);border-radius:10px;width:620px;max-width:calc(100% - 32px);max-height:calc(100% - 32px);overflow-y:auto;box-shadow:0 12px 36px #0004;padding:20px}
+.modal h3{margin:0 0 12px;font-size:16px;display:flex;justify-content:space-between;align-items:center}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.note-check{display:flex;align-items:flex-start;gap:6px;margin:6px 0;font-size:12.5px;cursor:pointer}
+.note-check input{width:auto;margin-top:3px}
 </style>
 <script type="importmap">
 {"imports":{
@@ -73,8 +80,8 @@ background:color-mix(in srgb,var(--pn) 58%,transparent);backdrop-filter:blur(12p
 <body>
 <div id="app">
 <aside id="panel">
-  <div style="display:flex;justify-content:space-between;align-items:center"><h1>LightCAD</h1><button id="theme" aria-label="切换明暗主题">◐ 主题</button></div>
-  <p class="sub">先生成实体，再在左上角设计树中选择要素，动态添加工艺要求。</p>
+  <div style="display:flex;justify-content:space-between;align-items:center"><h1>LightCAD</h1><button id="theme">◐ 主题</button></div>
+  <p class="sub">搭积木参数化建模 · 智能自动生成标准工程图纸</p>
 
   <h2><span>实体参数设置</span><span class="badge" id="mbadge" hidden>编辑模式</span></h2>
   <div id="pform">
@@ -89,23 +96,62 @@ background:color-mix(in srgb,var(--pn) 58%,transparent);backdrop-filter:blur(12p
     <select id="wp"></select>
     <label for="anchor">定位参考点</label>
     <select id="anchor"></select>
-    <label>相对偏移 X / Y / Z (mm，相对定位参考点)</label>
-    <div class="row c3"><input id="cx" type="number" value="0" aria-label="中心 X"><input id="cy" type="number" value="0" aria-label="中心 Y"><input id="cz" type="number" value="0" aria-label="中心 Z"></div>
+    <label>相对偏移 X / Y / Z (mm)</label>
+    <div class="row c3"><input id="cx" type="number" value="0"><input id="cy" type="number" value="0"><input id="cz" type="number" value="0"></div>
     <div id="dims" class="row c2"></div>
-    
   </div>
   <button class="pri" id="gen">生成实体</button>
   <button class="wide" id="exit" hidden>完成编辑，新建实体</button>
-  <p class="hint" id="msg">切削孔只会切除其之前生成的实体，请先生成实体。</p>
+  <p class="hint" id="msg">先生成实体；切削孔将自动切除已有实体。</p>
 
   <h2><span>工艺公差面板</span></h2>
   <div id="proc"></div>
-  <datalist id="fits"><option value="H7/g6"><option value="H7/h6"><option value="H7/k6"><option value="H7/n6"><option value="H7/p6"><option value="H8/f7"><option value="H9/d9"><option value="G7/h6"></datalist>
-  <details><summary>数据模型 (JSON)</summary><pre id="json"></pre></details>
 </aside>
 <main id="view">
-  <div id="ft"><div id="fth"><span>设计树</span><button id="ftt" aria-label="折叠或展开设计树">▾ 折叠</button></div><div id="ftb"></div></div>
+  <div id="ft"><div id="fth"><span>设计树</span><button id="ftt">▾ 折叠</button></div><div id="ftb"></div></div>
+  <div id="exbar">
+    <button id="exbtn">导出 ▾</button>
+    <div id="exmenu" role="menu">
+      <button type="button" data-ex="stl">导出 3D 打印 (STL 文件)<small>标准二进制 STL 网格</small></button>
+      <button type="button" data-ex="pdf">导出 2D 工程图 (PDF 蓝图)<small>国标 A4 标准三视图 · 自动排版</small></button>
+    </div>
+  </div>
 </main>
+</div>
+
+<!-- 导出 PDF 属性确认弹窗 -->
+<div id="modal-backdrop">
+  <div class="modal">
+    <h3><span>标准工程图 (PDF) 信息确认</span><button id="close-modal" style="border:0;background:transparent;font-size:16px">✕</button></h3>
+    <div class="modal-grid">
+      <div>
+        <label>零件名称</label><input id="pdf-part-name" value="结构件">
+        <label>图样代号 (图号)</label><input id="pdf-dwg-no" value="DWG-2026-001">
+        <label>零件材料</label>
+        <input id="pdf-material" list="mat-list" value="45# 钢">
+        <datalist id="mat-list">
+          <option value="45# 钢"><option value="Q235 普通碳钢"><option value="6061-T6 铝合金"><option value="304 不锈钢"><option value="POM (赛钢)"><option value="ABS 工程塑料">
+        </datalist>
+        <div class="row c2" style="margin-top:6px">
+          <div><label>设计人员</label><input id="pdf-author" value="设计员"></div>
+          <div><label>图纸比例</label><input id="pdf-scale" value="自动计算" readonly></div>
+        </div>
+      </div>
+      <div>
+        <label>通用技术要求 (固定显示在标题栏上方)</label>
+        <label class="note-check"><input type="checkbox" id="chk-deburr" checked>1. 去毛刺，锐边倒钝。</label>
+        <label class="note-check"><input type="checkbox" id="chk-corner" checked>2. 未注倒角均为 C1，未注圆角均为 R2。</label>
+        <label class="note-check"><input type="checkbox" id="chk-gbt" checked>3. 未注尺寸公差按 GB/T 1804-m 执行。</label>
+        <label>表面处理 / 热处理 (选填)</label>
+        <input id="pdf-surface-treat" placeholder="如：表面发黑 / 调质处理" value="调质处理">
+        <label>自定义补充备注</label>
+        <textarea id="pdf-custom-note" rows="2" placeholder="可输入其他补充技术要求"></textarea>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="pri" id="btn-print-pdf">生成标准三视图 PDF 蓝图</button>
+    </div>
+  </div>
 </div>
 
 <script type="module">
@@ -119,18 +165,17 @@ CYLINDER:[['radius','半径 (R)',10],['height','高度 (H)',30]],SPHERE:[['radiu
 CONE:[['radius','底部半径 (R1)',12],['topRadius','顶部半径 (R2)',6],['height','高度 (H)',25]],SLOT:[['radius','端部半径 (R)',8],['height','总长度 (H)',40]]};
 const NAMES={BOX:['长方体','长方体切削孔'],CYLINDER:['圆柱体','圆柱切削孔'],SPHERE:['球体','球形切削孔'],CONE:['圆锥台','圆锥切削孔'],SLOT:['胶囊体','槽形切削孔']};
 const TN={FLATNESS:'平面度',STRAIGHTNESS:'直线度',ROUNDNESS:'圆度',CYLINDRICITY:'圆柱度',PROFILE:'面轮廓度',
-PERPENDICULARITY:'垂直度',PARALLELISM:'平行度',ANGULARITY:'倾斜度',CONCENTRICITY:'同心度 / 同轴度',POSITION:'位置度',SYMMETRY:'对称度',RUNOUT:'圆跳动',
-RA:'表面粗糙度 Ra',RZ:'表面粗糙度 Rz',HARDNESS:'热处理硬度 (HRC)',COATING:'表面涂覆',FIT_CODE:'标准配合代号',DEVIATION:'自定义尺寸偏差 (±)'};
-const GROUPS=[['形状公差 (单要素)',['FLATNESS','STRAIGHTNESS','ROUNDNESS','CYLINDRICITY','PROFILE']],
-['方向与位置公差 (关联要素)',['PERPENDICULARITY','PARALLELISM','ANGULARITY','CONCENTRICITY','POSITION','SYMMETRY','RUNOUT']],
-['表面质量与热处理',['RA','RZ','HARDNESS','COATING']],['配合公差',['FIT_CODE','DEVIATION']]];
-const UNITS=[['mm','mm (毫米)'],['μm','μm (微米)'],['°','° (度数/倾斜角)'],['HRC','HRC (洛氏硬度)']];
-const NEEDS_DATUM=['PERPENDICULARITY','PARALLELISM','ANGULARITY','CONCENTRICITY','POSITION','SYMMETRY','RUNOUT'];  /* 需要基准引用 */
-const COATINGS=['阳极氧化','发黑','镀锌'],FITS=['H7/g6','H7/h6','H7/k6','H7/n6','H7/p6','H8/f7','H9/d9','G7/h6'],ACTIVE=['A','B','C'];
-const defUnit=t=>['RA','RZ','COATING'].includes(t)?'μm':t==='HARDNESS'?'HRC':'mm';   /* 智能默认单位 */
-const defType={plane:'FLATNESS',cyl:'CYLINDRICITY',axis:'STRAIGHTNESS',edge:'STRAIGHTNESS'};
+PERPENDICULARITY:'垂直度',PARALLELISM:'平行度',ANGULARITY:'倾斜度',CONCENTRICITY:'同轴度',POSITION:'位置度',SYMMETRY:'对称度',RUNOUT:'圆跳动',
+RA:'表面粗糙度 Ra',RZ:'表面粗糙度 Rz',HARDNESS:'热处理硬度 (HRC)',COATING:'表面涂覆',FIT_CODE:'配合代号',DEVIATION:'尺寸偏差 (±)'};
+const GROUPS=[['形状公差',['FLATNESS','STRAIGHTNESS','ROUNDNESS','CYLINDRICITY','PROFILE']],
+['位置公差 (需基准)',['PERPENDICULARITY','PARALLELISM','ANGULARITY','CONCENTRICITY','POSITION','SYMMETRY','RUNOUT']],
+['表面与热处理',['RA','RZ','HARDNESS','COATING']],['配合公差',['FIT_CODE','DEVIATION']]];
+const UNITS=[['mm','mm (毫米)'],['μm','μm (微米)'],['°','° (度)'],['HRC','HRC']];
+const NEEDS_DATUM=['PERPENDICULARITY','PARALLELISM','ANGULARITY','CONCENTRICITY','POSITION','SYMMETRY','RUNOUT'];
+const COATINGS=['阳极氧化','发黑','镀锌'],ACTIVE=['A','B','C'];
+const defUnit=t=>['RA','RZ','COATING'].includes(t)?'μm':t==='HARDNESS'?'HRC':'mm';
 
-/* ---------- 场景 ---------- */
+/* 场景设置 */
 const view=$('#view'),renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));view.appendChild(renderer.domElement);
 const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(45,1,0.1,5000);
@@ -148,16 +193,15 @@ function resize(){const w=view.clientWidth,h=view.clientHeight;renderer.setSize(
 new ResizeObserver(resize).observe(view);resize();
 renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
 
-/* ---------- 数据模型 ---------- */
+/* 数据模型与几何计算 */
 let prims=[],counter=0,sel=[],hov=null,editId=null,result=null;
 const ev=new Evaluator();
 const wpQ=wp=>new THREE.Quaternion().setFromEuler(wp==='YZ'?new THREE.Euler(0,Math.PI/2,0):wp==='XZ'?new THREE.Euler(-Math.PI/2,0,0):new THREE.Euler());
 const allFeats=p=>Object.values(p.subFeatures).flat();
 function locate(fid){for(const p of prims)for(const f of allFeats(p))if(f.id===fid)return [p,f];return []}
-
-const W=(p,v)=>v.clone().applyQuaternion(p.q).add(V3(p.center.x,p.center.y,p.center.z));  /* 局部→世界 */
+const W=(p,v)=>v.clone().applyQuaternion(p.q).add(V3(p.center.x,p.center.y,p.center.z));
 const BC=[[-1,-1],[1,-1],[1,1],[-1,1]];
-/* 局部坐标下的特征几何 (Z 为拉伸轴) */
+
 function localGeom(p,f){
   const d=p.dimensions,[k,a]=f.ref.split(':'),o={};
   if(p.type==='BOX'){
@@ -168,7 +212,7 @@ function localGeom(p,f){
     else if(k==='e'){const i=+a;if(i<8){const z=(i<4?1:-1)*hz,A=BC[i%4],B=BC[(i+1)%4];o.a=V3(A[0]*hx,A[1]*hy,z);o.b=V3(B[0]*hx,B[1]*hy,z)}
       else{const q=BC[i-8];o.a=V3(q[0]*hx,q[1]*hy,-hz);o.b=V3(q[0]*hx,q[1]*hy,hz)}}
     else{const i=+a,q=BC[i%4];o.a=V3(q[0]*hx,q[1]*hy,(i<4?1:-1)*hz)}
-  }else if(p.type==='SPHERE'){if(k==='f'){o.c=V3(0,0,0)}else o.a=V3(0,0,0)}
+  }else if(p.type==='SPHERE'){if(k==='f')o.c=V3(0,0,0);else o.a=V3(0,0,0)}
   else{
     const h=d.height,rb=d.radius,rt=p.type==='CONE'?d.topRadius:d.radius;
     if(k==='a'){o.a=V3(0,0,-h/2);o.b=V3(0,0,h/2)}
@@ -179,14 +223,14 @@ function localGeom(p,f){
   }
   return o;
 }
-/* 解析基准面与定位参考点 → 世界姿态 p.q 与中心 p.center (按顺序，引用只指向更早的实体) */
+
 function resolve(p){
   const wp=p.workplane,[rp,rf]=wp.length>2?locate(wp):[],g=rf&&localGeom(rp,rf);
   let A=V3(0,0,0),S=V3(0,0,0);
   if(g&&g.n){
     const n=g.n.clone().applyQuaternion(rp.q).normalize(),ext=p.type==='SPHERE'?p.dimensions.radius:p.dimensions.height/2;
     p.q=new THREE.Quaternion().setFromUnitVectors(V3(0,0,1),n);
-    S=n.multiplyScalar(p.role==='HOLE'?-(ext-.05):ext-.02);   /* 实体向外生长，切削孔向内切入 */
+    S=n.multiplyScalar(p.role==='HOLE'?-(ext-.05):ext-.02);
     if(p.anchor==='faceC')A=W(rp,g.c);
   }else p.q=wpQ(wp.length>2?'XY':wp);
   if(p.anchor&&p.anchor!=='global'&&p.anchor!=='faceC'){const [ap,af]=locate(p.anchor);if(af){const a=localGeom(ap,af);A=W(ap,a.c||a.a)}}
@@ -195,41 +239,90 @@ function resolve(p){
 const resolveAll=()=>prims.forEach(resolve);
 const pl=p=>p.workplane.length===2?p.workplane+'平面':(([rp,rf])=>rf?`${rp.name}·${rf.displayName}`:'XY平面')(locate(p.workplane));
 
-/* 长方体：对已设置倒角/圆角的棱边逐条做布尔切除 */
+/* 直线棱边倒角/倒圆角生成器 */
 function boxGeo(p){
-  const d=p.dimensions,h=[d.length/2,d.width/2,d.height/2];
+  const d=p.dimensions,hx=d.length/2,hy=d.width/2,hz=d.height/2,h=[hx,hy,hz];
   let body=new Brush(new THREE.BoxGeometry(d.length,d.width,d.height));
+  body.updateMatrixWorld();
+
+  const EDGE_INFO=[
+    {axis:0, a1:1, s1:-1, a2:2, s2: 1, ec:[0, -hy,  hz]},
+    {axis:1, a1:0, s1: 1, a2:2, s2: 1, ec:[ hx,  0,  hz]},
+    {axis:0, a1:1, s1: 1, a2:2, s2: 1, ec:[0,  hy,  hz]},
+    {axis:1, a1:0, s1:-1, a2:2, s2: 1, ec:[-hx,  0,  hz]},
+    {axis:0, a1:1, s1:-1, a2:2, s2:-1, ec:[0, -hy, -hz]},
+    {axis:1, a1:0, s1: 1, a2:2, s2:-1, ec:[ hx,  0, -hz]},
+    {axis:0, a1:1, s1: 1, a2:2, s2:-1, ec:[0,  hy, -hz]},
+    {axis:1, a1:0, s1:-1, a2:2, s2:-1, ec:[-hx,  0, -hz]},
+    {axis:2, a1:0, s1:-1, a2:1, s2:-1, ec:[-hx, -hy, 0]},
+    {axis:2, a1:0, s1: 1, a2:1, s2:-1, ec:[ hx, -hy, 0]},
+    {axis:2, a1:0, s1: 1, a2:1, s2: 1, ec:[ hx,  hy, 0]},
+    {axis:2, a1:0, s1:-1, a2:1, s2: 1, ec:[-hx,  hy, 0]}
+  ];
+
   p.subFeatures.edges.forEach(f=>{
     const t=f.treatment;if(!t||t.type==='NONE'||!(t.size>0))return;
-    const i=+f.ref.split(':')[1];let A,o;
-    if(i<8){const m=i%4,z=i<4?1:-1;A=m%2;o=[[0,-1],[1,0],[0,1],[-1,0]][m];o=[o[0],o[1],z]}
-    else{A=2;o=[BC[i-8][0],BC[i-8][1],0]}
-    const q=new THREE.Quaternion().setFromEuler(A===0?new THREE.Euler(0,Math.PI/2,0):A===1?new THREE.Euler(-Math.PI/2,0,0):new THREE.Euler());
-    const ov=V3(...o),su=Math.round(ov.dot(V3(1,0,0).applyQuaternion(q))),sv=Math.round(ov.dot(V3(0,1,0).applyQuaternion(q)));
-    const c=Math.min(t.size,Math.min(...[0,1,2].filter(x=>x!==A).map(x=>2*h[x]))/2-0.01),len=2*h[A]+2;if(!(c>0))return;
-    let cg;
-    if(t.type==='CHAMFER'){const ang=Math.atan2(sv,su),tk=c+1,m=-c/Math.SQRT2+tk/2;
-      cg=new THREE.BoxGeometry(tk,4*c,len);cg.rotateZ(ang);cg.translate(Math.cos(ang)*m,Math.sin(ang)*m,0)}
-    else{
-      const sg=new THREE.BoxGeometry(c+1,c+1,len);sg.translate(su*(1-c)/2,sv*(1-c)/2,0);
-      const cy=new THREE.CylinderGeometry(c,c,len+2,24).rotateX(Math.PI/2);cy.translate(-c*su,-c*sv,0);
-      const sb=new Brush(sg),cb=new Brush(cy);sb.updateMatrixWorld();cb.updateMatrixWorld();cg=ev.evaluate(sb,cb,SUBTRACTION).geometry}
-    cg.applyQuaternion(q);cg.translate(o[0]*h[0],o[1]*h[1],o[2]*h[2]);
-    const cut=new Brush(cg);cut.updateMatrixWorld();body.updateMatrixWorld();body=ev.evaluate(body,cut,SUBTRACTION);
+    const i=+f.ref.split(':')[1];if(isNaN(i)||i<0||i>=12)return;
+    const inf=EDGE_INFO[i],ax=inf.axis,a1=inf.a1,s1=inf.s1,a2=inf.a2,s2=inf.s2;
+    const maxR=Math.min(h[a1],h[a2])-0.05, r=Math.min(t.size,maxR);
+    if(r<=0)return;
+
+    try {
+      const len = 2 * h[ax];
+      if(t.type==='CHAMFER'){
+        const cutG = new THREE.BoxGeometry(Math.SQRT2 * r, Math.SQRT2 * r, len + 0.2);
+        cutG.rotateZ(Math.PI / 4);
+        if(ax===0)cutG.rotateY(Math.PI/2);
+        else if(ax===1)cutG.rotateX(Math.PI/2);
+        const cut = new Brush(cutG);
+        cut.position.set(inf.ec[0], inf.ec[1], inf.ec[2]);
+        cut.updateMatrixWorld();
+        body = ev.evaluate(body, cut, SUBTRACTION);
+      }else if(t.type==='FILLET'){
+        const bsz=[0,0,0], bpos=[0,0,0];
+        bsz[ax]=len+0.1; bsz[a1]=r+0.05; bsz[a2]=r+0.05;
+        bpos[ax]=inf.ec[ax];
+        bpos[a1]=inf.ec[a1]-s1*(r/2-0.025);
+        bpos[a2]=inf.ec[a2]-s2*(r/2-0.025);
+        const cut = new Brush(new THREE.BoxGeometry(bsz[0],bsz[1],bsz[2]));
+        cut.position.set(bpos[0],bpos[1],bpos[2]);
+        cut.updateMatrixWorld();
+        body = ev.evaluate(body, cut, SUBTRACTION);
+
+        const cylG = new THREE.CylinderGeometry(r, r, len, 36);
+        if(ax===0)cylG.rotateZ(Math.PI/2);
+        else if(ax===2)cylG.rotateX(Math.PI/2);
+        const cylPos=[0,0,0];
+        cylPos[ax]=inf.ec[ax];
+        cylPos[a1]=inf.ec[a1]-s1*r;
+        cylPos[a2]=inf.ec[a2]-s2*r;
+        const cyl = new Brush(cylG);
+        cyl.position.set(cylPos[0],cylPos[1],cylPos[2]);
+        cyl.updateMatrixWorld();
+        body = ev.evaluate(body, cyl, ADDITION);
+      }
+    } catch(err) {
+      console.warn('棱边裁剪跳过:', err);
+    }
   });
   return body.geometry;
 }
+
+function cylGeo(p){
+  const d=p.dimensions,r=d.radius,h=d.height;
+  return new THREE.CylinderGeometry(r,r,h,48).rotateX(Math.PI/2);
+}
+
 function geo(p){
   const d=p.dimensions;let g;
   if(p.type==='BOX')g=boxGeo(p);
-  else if(p.type==='CYLINDER')g=new THREE.CylinderGeometry(d.radius,d.radius,d.height,48).rotateX(Math.PI/2);
+  else if(p.type==='CYLINDER')g=cylGeo(p);
   else if(p.type==='CONE')g=new THREE.CylinderGeometry(d.topRadius,d.radius,d.height,48).rotateX(Math.PI/2);
   else if(p.type==='SPHERE')g=new THREE.SphereGeometry(d.radius,48,32);
   else g=new THREE.CapsuleGeometry(d.radius,Math.max(d.height-2*d.radius,0.01),8,32).rotateX(Math.PI/2);
   g.applyQuaternion(p.q);g.translate(p.center.x,p.center.y,p.center.z);return g;
 }
 
-/* 子要素枚举 (实体与切削孔各自独立展开) */
 function feats(p){
   const hole=p.role==='HOLE',n=p.name;let i=0;
   const mk=(dn,type,shape,ref)=>({id:`${n}_${type[0]}${++i}`,displayName:dn,type,shape,ref,tolerances:[]});
@@ -251,7 +344,6 @@ function feats(p){
   return {faces:F,edges:E,vertices:Vx,axes:A};
 }
 
-/* 高亮几何 (局部坐标，Z 为拉伸轴) */
 function hl(p,f){
   const d=p.dimensions,g=new THREE.Group(),c=V3(0,0,0),[k,a]=f.ref.split(':');
   const add=(geom,pos)=>{const m=new THREE.Mesh(geom,hlMat);if(pos)m.position.copy(pos);m.renderOrder=10;g.add(m);return m};
@@ -264,23 +356,22 @@ function hl(p,f){
     else if(k==='e'){const i=+a;if(i<8){const z=(i<4?1:-1)*hz,A=cs[i%4],B=cs[(i+1)%4];tube(V3(A[0]*hx,A[1]*hy,z),V3(B[0]*hx,B[1]*hy,z));dot(V3(A[0]*hx,A[1]*hy,z));dot(V3(B[0]*hx,B[1]*hy,z));c.set((A[0]+B[0])*hx/2,(A[1]+B[1])*hy/2,z)}
       else{const q=cs[i-8];tube(V3(q[0]*hx,q[1]*hy,-hz),V3(q[0]*hx,q[1]*hy,hz));dot(V3(q[0]*hx,q[1]*hy,-hz));dot(V3(q[0]*hx,q[1]*hy,hz));c.set(q[0]*hx,q[1]*hy,0)}}
     else{const i=+a,q=cs[i%4];dot(V3(q[0]*hx,q[1]*hy,(i<4?1:-1)*hz))}
-  }else if(p.type==='SPHERE'){
-    if(k==='f'){add(new THREE.SphereGeometry(d.radius+.1,48,32));c.set(d.radius,0,0)}else dot();
-  }else{
-    const h=d.height,rb=d.radius,rt=p.type==='CONE'?d.topRadius:d.radius,r=rb;
+  }else if(p.type==='SPHERE'){if(k==='f'){add(new THREE.SphereGeometry(d.radius+.1,48,32));c.set(d.radius,0,0)}else dot()}
+  else{
+    const h=d.height,rb=d.radius,rt=p.type==='CONE'?d.topRadius:d.radius;
     if(k==='a'){tube(V3(0,0,-h/2-6),V3(0,0,h/2+6));dot(V3(0,0,-h/2));dot(V3(0,0,h/2))}
     else if(k==='e'){const top=a==='top',rr=top?rt:rb;add(new THREE.TorusGeometry(Math.max(rr,.2),.6,8,64),V3(0,0,top?h/2:-h/2));c.set(rr,0,top?h/2:-h/2)}
     else if(p.type==='SLOT'){
-      const hh=h/2-r;
-      if(a==='side'){add(new THREE.CylinderGeometry(r+.1,r+.1,Math.max(h-2*r,.01),40,1,true).rotateX(Math.PI/2));c.set(r,0,0)}
-      else{const top=a==='top';add(new THREE.SphereGeometry(r+.1,32,16,0,Math.PI*2,0,Math.PI/2).rotateX(top?Math.PI/2:-Math.PI/2),V3(0,0,top?hh:-hh));c.set(0,0,top?h/2:-h/2)}
+      const hh=h/2-rb;
+      if(a==='side'){add(new THREE.CylinderGeometry(rb+.1,rb+.1,Math.max(h-2*rb,.01),40,1,true).rotateX(Math.PI/2));c.set(rb,0,0)}
+      else{const top=a==='top';add(new THREE.SphereGeometry(rb+.1,32,16,0,Math.PI*2,0,Math.PI/2).rotateX(top?Math.PI/2:-Math.PI/2),V3(0,0,top?hh:-hh));c.set(0,0,top?h/2:-h/2)}
     }else if(a==='side'){add(new THREE.CylinderGeometry(rt+.1,rb+.1,h,48,1,true).rotateX(Math.PI/2));c.set((rt+rb)/2,0,0)}
     else{const top=a==='top';add(new THREE.CircleGeometry(Math.max(top?rt:rb,.2),48),V3(0,0,(top?1:-1)*(h/2+.1)));c.set(0,0,(top?1:-1)*h/2)}
   }
   return {g,c};
 }
 function place(p,obj){obj.quaternion.copy(p.q);obj.position.set(p.center.x,p.center.y,p.center.z);return obj}
-function showHL(){  /* 所有选中要素 (及悬停要素) 同时高亮 */
+function showHL(){
   hlGroup.clear();
   new Set([...sel,...(hov?[hov]:[])]).forEach(fid=>{const [p,f]=locate(fid);if(f)hlGroup.add(place(p,hl(p,f).g))});
 }
@@ -294,6 +385,7 @@ function refreshBadges(){
   prims.forEach(p=>allFeats(p).forEach(f=>{if(!f.isDatum)return;const {c}=hl(p,f),sp=badge(f.isDatum);
     sp.position.copy(c.applyQuaternion(p.q).add(V3(p.center.x,p.center.y,p.center.z)));badges.add(sp)}));
 }
+
 function rebuild(){
   resolveAll();
   if(result){scene.remove(result);result.geometry.dispose();result=null}
@@ -302,23 +394,23 @@ function rebuild(){
     const b=new Brush(geo(p),solidMat);b.updateMatrixWorld();
     if(p.role==='SOLID')acc=acc?ev.evaluate(acc,b,ADDITION):b;
     else{ghosts.add(new THREE.Mesh(geo(p),ghostMat));if(acc)acc=ev.evaluate(acc,b,SUBTRACTION)}
-  }}catch(e){console.error('CSG 计算失败',e)}
-  if(acc){acc.material=solidMat;result=acc;scene.add(acc)}
+  }}catch(e){console.error('CSG 错误:',e)}
+  if(acc){acc.material=solidMat;acc.geometry.computeVertexNormals();result=acc;scene.add(acc)}
   refreshBadges();showHL();
 }
 
-/* ---------- 左侧：实体参数 / 编辑模式 ---------- */
+/* 界面表单 */
 function dimsForm(vals){
   $('#dims').innerHTML=FIELDS[$('#type').value].map(([k,l,v])=>`<div><label for="d_${k}">${l}</label><input id="d_${k}" type="number" min="0" step="0.5" value="${vals?.[k]??v}"></div>`).join('');
 }
 function refPrims(){const lim=editId?prims.findIndex(x=>x.id===editId):prims.length;return prims.slice(0,lim<0?prims.length:lim)}
-function refreshRefs(){   /* 动态填充：全局基准面 + 现有实体表面 */
+function refreshRefs(){
   const wp=$('#wp'),cur=wp.value||'XY',faces=refPrims().flatMap(p=>p.subFeatures.faces.filter(f=>localGeom(p,f).n).map(f=>`<option value="${f.id}">${p.name} / ${f.displayName}</option>`));
   wp.innerHTML='<optgroup label="--- 全局基准面 ---"><option value="XY">全局 XY 平面 (沿 Z 拉伸)</option><option value="YZ">全局 YZ 平面 (沿 X 拉伸)</option><option value="XZ">全局 XZ 平面 (沿 Y 拉伸)</option></optgroup>'+(faces.length?`<optgroup label="--- 现有实体表面 ---">${faces.join('')}</optgroup>`:'');
   if([...wp.options].some(o=>o.value===cur))wp.value=cur;
   refreshAnchor();
 }
-function refreshAnchor(){   /* 定位参考点：全局原点 / 参考面中心 / 任意现有顶点或面中心 */
+function refreshAnchor(){
   const an=$('#anchor'),cur=an.value||'global',isFace=$('#wp').value.length>2;
   const pts=refPrims().flatMap(p=>allFeats(p).filter(f=>f.shape==='vertex'||f.type==='FACE').map(f=>`<option value="${f.id}">${p.name} / ${f.displayName}${f.shape==='vertex'?'（顶点）':'（面中心）'}</option>`));
   an.innerHTML=`<option value="global">全局原点 (0,0,0)</option>${isFace?'<option value="faceC">所选参考面的中心</option>':''}${pts.length?`<optgroup label="--- 现有特征 ---">${pts.join('')}</optgroup>`:''}`;
@@ -338,119 +430,101 @@ function fillForm(p){
 function setMode(){
   const e=!!editId;$('#mbadge').hidden=!e;$('#gen').hidden=e;$('#exit').hidden=!e;$('#type').disabled=e;
   document.querySelectorAll('[name=role]').forEach(r=>r.disabled=e);
-  $('#msg').textContent=e?'编辑模式：修改任意数值将实时重算模型。类型与布尔角色不可更改。':'切削孔只会切除其之前生成的实体，请先生成实体。';
+  $('#msg').textContent=e?'编辑模式：修改任意数值将实时重算模型。':'切削孔只会切除其之前生成的实体，请先生成实体。';
 }
 function startEdit(id){editId=id;fillForm(prims.find(p=>p.id===id));setMode();renderTree()}
 $('#type').onchange=()=>dimsForm();dimsForm();
 $('#gen').onclick=()=>{
-  const v=readForm();if(!v){$('#msg').textContent='参数无效：请输入数字，且尺寸必须大于 0。';return}
+  const v=readForm();if(!v){$('#msg').textContent='参数无效：请输入有效数字，尺寸须大于 0。';return}
   const id='p'+(++counter),p={id,name:`${NAMES[v.type][v.role==='HOLE'?1:0]}_${String(counter).padStart(2,'0')}`,...v};
-  p.subFeatures=feats(p);p.q=new THREE.Quaternion();p.center={x:0,y:0,z:0};prims.push(p);rebuild();render();$('#msg').textContent=`已生成 ${p.name}。点击设计树中的名称可进入编辑模式。`;
+  p.subFeatures=feats(p);p.q=new THREE.Quaternion();p.center={x:0,y:0,z:0};prims.push(p);rebuild();render();$('#msg').textContent=`已生成 ${p.name}。点击设计树名称可进入编辑。`;
 };
 $('#exit').onclick=()=>{editId=null;setMode();renderTree()};
-$('#pform').addEventListener('input',e=>{   /* 双向绑定：编辑模式下实时重算 */
+$('#pform').addEventListener('input',e=>{
   if(e.target.id==='wp'){refreshAnchor();$('#anchor').value=$('#wp').value.length>2?'faceC':'global'}
   if(!editId)return;const v=readForm(),p=prims.find(x=>x.id===editId);if(!v||!p)return;
-  Object.assign(p,{workplane:v.workplane,anchor:v.anchor,offset:v.offset,dimensions:v.dimensions});rebuild();renderProc();renderJson();
+  Object.assign(p,{workplane:v.workplane,anchor:v.anchor,offset:v.offset,dimensions:v.dimensions});rebuild();renderProc();
 });
 
-/* ---------- 左上角悬浮设计树 ---------- */
+/* 设计树与工艺面板 (修复了此前丢失冒号的语法错误) */
 function renderTree(){
   $('#ftb').innerHTML=prims.length?prims.map(p=>{
     const s=p.subFeatures,hole=p.role==='HOLE',open=p.open!==false;
-    const grp=(t,l)=>l?.length?`<div class="gt">${t} (${l.length})</div>`+l.map(f=>`<div class="it ${sel.includes(f.id)?'on':''}" tabindex="0" role="button" data-f="${f.id}"><input type="checkbox" class="ck" tabindex="-1" ${sel.includes(f.id)?'checked':''} aria-label="多选">${f.displayName}${f.treatment&&f.treatment.type!=='NONE'?` <i>[${f.treatment.type==='CHAMFER'?'C':'R'}${f.treatment.size}]</i>`:''}${f.isDatum?`<span class="dt">[-${f.isDatum}-]</span>`:''}${f.tolerances.length?' ●':''}</div>`).join(''):'';
-    return `<div class="ph ${editId===p.id?'ed':''}"><button data-tg="${p.id}" aria-label="展开或折叠">${open?'▾':'▸'}</button><span class="pn" tabindex="0" data-p="${p.id}">${hole?'⭕':'📦'} ${p.name} [${hole?'空心':'实心'} | ${pl(p)}]</span><button data-del="${p.id}" aria-label="删除 ${p.name}">✕</button></div>`+
+    const grp=(t,l)=>l?.length?`<div class="gt">${t} (${l.length})</div>`+l.map(f=>`<div class="it ${sel.includes(f.id)?'on':''}" tabindex="0" data-f="${f.id}">${f.displayName}${f.treatment&&f.treatment.type!=='NONE'?` <i>[${f.treatment.type==='CHAMFER'?'C':'R'}${f.treatment.size}]</i>`:''}${f.isDatum?`<span class="dt">[-${f.isDatum}-]</span>`:''}${f.tolerances.length?' ●':''}</div>`).join(''):'';
+    return `<div class="ph ${editId===p.id?'ed':''}"><button data-tg="${p.id}">${open?'▾':'▸'}</button><span class="pn" data-p="${p.id}">${hole?'⭕':'📦'} ${p.name} [${hole?'空心':'实心'} | ${pl(p)}]</span><button data-del="${p.id}">✕</button></div>`+
       (open?grp('面',s.faces)+grp(p.type==='BOX'?'棱边':hole?'顶底圆周边缘':'圆周边缘',s.edges)+grp('轴线',s.axes)+grp('顶点',s.vertices):'');
-  }).join(''):'<p class="hint" style="margin:4px 4px 8px">暂无特征，请在左侧生成实体。</p>';
+  }).join(''):'<p class="hint" style="margin:4px">暂无特征，请先在左侧生成实体。</p>';
 }
-const ftb=$('#ftb');
-ftb.addEventListener('click',e=>{
+$('#ftb').addEventListener('click',e=>{
   const t=e.target.closest('[data-tg]'),d=e.target.closest('[data-del]'),n=e.target.closest('[data-p]'),it=e.target.closest('.it');
   if(t){const p=prims.find(x=>x.id===t.dataset.tg);p.open=p.open===false;renderTree()}
   else if(d){const p=prims.find(x=>x.id===d.dataset.del);if(editId===p.id){editId=null;setMode()}
     const ids=allFeats(p).map(f=>f.id);sel=sel.filter(x=>!ids.includes(x));prims=prims.filter(x=>x!==p);rebuild();render()}
   else if(n)startEdit(n.dataset.p);
-  else if(it){const f=it.dataset.f,multi=e.ctrlKey||e.metaKey||e.shiftKey||e.target.classList.contains('ck');
-    sel=multi?(sel.includes(f)?sel.filter(x=>x!==f):[...sel,f]):[f];showHL();renderTree();renderProc()}  /* 单击=单选；Ctrl/Shift/复选框=多选 */
+  else if(it){const f=it.dataset.f,multi=e.ctrlKey||e.shiftKey;sel=multi?(sel.includes(f)?sel.filter(x=>x!==f):[...sel,f]):[f];showHL();renderTree();renderProc()}
 });
-ftb.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[tabindex]')){e.preventDefault();e.target.click()}});
-ftb.addEventListener('mouseover',e=>{const it=e.target.closest('.it');hov=it?it.dataset.f:null;showHL()});
-ftb.addEventListener('mouseleave',()=>{hov=null;showHL()});
+$('#ftb').addEventListener('mouseover',e=>{const it=e.target.closest('.it');hov=it?it.dataset.f:null;showHL()});
+$('#ftb').addEventListener('mouseleave',()=>{hov=null;showHL()});
 $('#ftt').onclick=()=>{const s=$('#ft').classList.toggle('shut');$('#ftt').textContent=s?'▸ 展开':'▾ 折叠'};
 
-/* ---------- 工艺公差面板 ---------- */
-const datumLetters=()=>new Set(prims.flatMap(p=>allFeats(p).map(f=>f.isDatum).filter(Boolean)));  /* 全局有效基准列表 */
+const datumLetters=()=>new Set(prims.flatMap(p=>allFeats(p).map(f=>f.isDatum).filter(Boolean)));
 const freeLetter=()=>{const u=datumLetters();return ACTIVE.find(x=>!u.has(x))};
-const unitSel=t=>`<select data-k="unit" aria-label="单位">${UNITS.map(([v,l])=>`<option value="${v}" ${t.unit===v?'selected':''}>${l}</option>`).join('')}</select>`;
-const numIn=(k,v,ph)=>`<input data-k="${k}" type="number" step="any" value="${v??''}" placeholder="${ph}" aria-label="${ph}">`;
+const unitSel=t=>`<select data-k="unit">${UNITS.map(([v,l])=>`<option value="${v}" ${t.unit===v?'selected':''}>${l}</option>`).join('')}</select>`;
+const numIn=(k,v,ph)=>`<input data-k="${k}" type="number" step="any" value="${v??''}" placeholder="${ph}">`;
 function reqRow(f,t,i){
   const act=datumLetters(),G='style="grid-template-columns:1fr 1fr 118px;margin-top:6px"';let body;
-  if(t.type==='FIT_CODE')body=`<input data-k="fitCode" list="fits" value="${t.fitCode??''}" placeholder="配合代号 如 H7/g6" aria-label="配合代号" style="margin-top:6px">`;
-  else if(t.type==='COATING')body=`<div class="row" ${G}><select data-k="coating" aria-label="涂覆类型">${COATINGS.map(c=>`<option ${t.coating===c?'selected':''}>${c}</option>`).join('')}</select>${numIn('upper',t.upper,'厚度')}${unitSel(t)}</div>`;
+  if(t.type==='FIT_CODE')body=`<input data-k="fitCode" list="fits" value="${t.fitCode??''}" placeholder="配合代号 如 H7/g6" style="margin-top:6px">`;
+  else if(t.type==='COATING')body=`<div class="row" ${G}><select data-k="coating">${COATINGS.map(c=>`<option ${t.coating===c?'selected':''}>${c}</option>`).join('')}</select>${numIn('upper',t.upper,'厚度')}${unitSel(t)}</div>`;
   else if(t.type==='HARDNESS')body=`<div class="row" ${G}>${numIn('lower',t.lower,'最小 如 58')}${numIn('upper',t.upper,'最大 如 62')}${unitSel(t)}</div>`;
   else body=`<div class="row" ${G}>${numIn('upper',t.upper,'上公差 +0.02')}${numIn('lower',t.lower,'下公差 -0.01')}${unitSel(t)}</div>`;
-  const dat=NEEDS_DATUM.includes(t.type)?`<label>基准引用</label><select data-k="datumRef" aria-label="基准引用"><option value="">[无基准]</option>${ACTIVE.map(x=>`<option value="${x}" ${t.datumRef===x?'selected':''} ${act.has(x)||t.datumRef===x?'':'disabled'}>[基准 ${x}]${act.has(x)?'':'（未设置）'}</option>`).join('')}</select>`:'';
-  return `<div class="req" data-row data-f="${f.id}" data-i="${i}">
-  <div class="row" style="grid-template-columns:1fr 30px"><select data-k="type" aria-label="要求类型">${GROUPS.map(([g,l])=>`<optgroup label="${g}">${l.map(o=>`<option value="${o}" ${t.type===o?'selected':''}>${TN[o]}</option>`).join('')}</optgroup>`).join('')}</select>
-  <button data-rm aria-label="删除此要求">✕</button></div>${body}${dat}</div>`;
+  const dat=NEEDS_DATUM.includes(t.type)?`<label>基准引用</label><select data-k="datumRef"><option value="">[无基准]</option>${ACTIVE.map(x=>`<option value="${x}" ${t.datumRef===x?'selected':''} ${act.has(x)||t.datumRef===x?'':'disabled'}>[基准 ${x}]${act.has(x)?'':'（未设置）'}</option>`).join('')}</select>`:'';
+  return `<div class="req" data-row data-f="${f.id}" data-i="${i}"><div class="row" style="grid-template-columns:1fr 30px"><select data-k="type">${GROUPS.map(([g,l])=>`<optgroup label="${g}">${l.map(o=>`<option value="${o}" ${t.type===o?'selected':''}>${TN[o]}</option>`).join('')}</optgroup>`).join('')}</select><button data-rm>✕</button></div>${body}${dat}</div>`;
 }
-let pairVal=0.02;
-function pairCard(S){
-  const [[p1,f1],[p2,f2]]=S,round=x=>x==='cyl'||x==='axis';
-  if(f1.shape==='vertex'||f2.shape==='vertex')return '<div class="card pair"><b>双要素配合公差</b><p class="hint">顶点不能参与配合公差，请重新选择。</p></div>';
-  return `<div class="card pair"><b>双要素配合公差</b>
-  <p class="hint">被测要素：<b>${p1.name} / ${f1.displayName}</b><br>基准要素：<b>${p2.name} / ${f2.displayName}</b>${f2.isDatum?` [-${f2.isDatum}-]`:'（添加时自动设为基准）'}</p>
-  <div class="row" style="grid-template-columns:1fr 120px"><input id="pv" type="number" step="any" min="0" value="${pairVal}" aria-label="公差值 (mm)"><button data-swap>交换被测 / 基准</button></div>
-  <div class="row c2" style="margin-top:8px"><button class="pri" style="margin-top:0" data-pair="PARALLELISM">两面平行度</button><button class="pri" style="margin-top:0" data-pair="PERPENDICULARITY">两面垂直度</button></div>
-  ${round(f1.shape)&&round(f2.shape)?'<button class="wide" data-pair="CONCENTRICITY">两要素同轴度</button>':''}</div>`;
-}
-const kv=(k,v)=>`<div class="kv"><span>${k}</span><b>${v}</b></div>`;
-const fx=v=>'('+[v.x,v.y,v.z].map(n=>(Math.abs(n)<5e-4?0:n).toFixed(3)).join(', ')+')';
-function coordHtml(p,f){   /* 选中要素的世界坐标检查 */
+
+function coordHtml(p,f){
   const g=localGeom(p,f),w=v=>W(p,v);let h='';
+  const fx=v=>'('+[v.x,v.y,v.z].map(n=>(Math.abs(n)<5e-4?0:n).toFixed(3)).join(', ')+')';
+  const kv=(k,v)=>`<div class="kv"><span>${k}</span><b>${v}</b></div>`;
   if(f.shape==='vertex')h=kv('顶点坐标 (X, Y, Z)',fx(w(g.a)));
-  else if(g.a&&g.b){const A=w(g.a),B=w(g.b);h=kv('起点坐标 (X1, Y1, Z1)',fx(A))+kv('终点坐标 (X2, Y2, Z2)',fx(B))+kv(f.shape==='axis'?'轴线总长 (mm)':'棱边总长 (mm)',A.distanceTo(B).toFixed(3))}
-  else if(g.circ)h=kv('圆心坐标 (X, Y, Z)',fx(w(g.c)))+kv('半径 (mm)',g.r.toFixed(3))+kv('周长 (mm)',(2*Math.PI*g.r).toFixed(3));
-  else if(g.n){const n=g.n.clone().applyQuaternion(p.q).normalize();
-    h=kv('面中心坐标 (X, Y, Z)',fx(w(g.c)))+kv('法向量 (Normal)',fx(n))+g.pts.map((q,i)=>kv(`${p.type==='BOX'?'边界角点':'边界象限点'} P${i+1}`,fx(w(q)))).join('')}
-  else if(g.c)h=kv('面中心坐标 (X, Y, Z)',fx(w(g.c)))+'<p class="hint" style="margin:2px 0">曲面：法向量沿表面连续变化。</p>';
+  else if(g.a&&g.b){const A=w(g.a),B=w(g.b);h=kv('起点坐标',fx(A))+kv('终点坐标',fx(B))+kv(f.shape==='axis'?'轴线总长':'棱边总长',A.distanceTo(B).toFixed(3)+' mm')}
+  else if(g.circ)h=kv('圆心坐标',fx(w(g.c)))+kv('半径',g.r.toFixed(3)+' mm');
+  else if(g.n)h=kv('面中心坐标',fx(w(g.c)))+kv('法向量',fx(g.n.clone().applyQuaternion(p.q).normalize()));
   return `<div class="coord">${h}</div>`;
 }
+
 function treatCard(p,f){
   if(f.shape!=='edge')return '';
-  if(p.type!=='BOX')return '<div class="coord"><b>棱边特征处理</b><p class="hint" style="margin:2px 0">圆周边缘暂不支持倒角 / 倒圆角。</p></div>';
+  if(p.type!=='BOX')return '<div class="coord"><b>棱边处理</b><p class="hint">当前特征暂不支持倒角/圆角。</p></div>';
   const t=f.treatment||{type:'NONE',size:2};
-  return `<div class="coord"><b>棱边特征处理</b><div class="row c2" style="margin-top:6px"><select data-et data-of="${f.id}" aria-label="棱边处理方式">${[['NONE','无'],['CHAMFER','倒角 (Chamfer)'],['FILLET','倒圆角 (Fillet)']].map(([v,l])=>`<option value="${v}" ${t.type===v?'selected':''}>${l}</option>`).join('')}</select><input data-es data-of="${f.id}" type="number" min="0" step="0.5" value="${t.size}" placeholder="尺寸 (mm)" aria-label="尺寸 (mm)"></div><p class="hint" style="margin:4px 0 0">尺寸 (mm)：倒角如 C2，圆角如 R3，修改后立即生效。</p></div>`;
+  return `<div class="coord"><b>棱边特征处理</b><div class="row c2" style="margin-top:6px"><select data-et data-of="${f.id}">${[['NONE','无'],['CHAMFER','倒角 (Chamfer)'],['FILLET','倒圆角 (Fillet)']].map(([v,l])=>`<option value="${v}" ${t.type===v?'selected':''}>${l}</option>`).join('')}</select><input data-es data-of="${f.id}" type="number" min="0" step="0.5" value="${t.size}" placeholder="尺寸 (mm)"></div></div>`;
 }
 function setTreat(fid,patch){
   const [,f]=locate(fid);if(!f)return;f.treatment={type:'NONE',size:2,...f.treatment,...patch};if(!(f.treatment.size>=0))f.treatment.size=0;
-  rebuild();renderTree();renderJson();
+  rebuild();renderTree();
 }
+
 function renderProc(){
   const S=sel.map(locate).filter(([p,f])=>f),el=$('#proc');
-  if(!S.length){el.innerHTML='<p class="hint">在左上角设计树中点击要素查看坐标并设置工艺要求；按住 Ctrl / Shift 点击，或勾选复选框，可多选。选 2 个要素时可设置双要素配合公差。</p>';return}
-  el.innerHTML=(S.length===2?pairCard(S):'')+S.map(([p,f])=>{
+  if(!S.length){el.innerHTML='<p class="hint">在设计树中选择面/边以查看坐标并添加公差；Ctrl+点击可多选。</p>';return}
+  el.innerHTML=S.map(([p,f])=>{
     const head=`<div class="chip">${p.name} / ${f.displayName}${f.isDatum?` <b>[-${f.isDatum}-]</b>`:''}</div>`+coordHtml(p,f);
-    if(f.shape==='vertex')return `<div class="card">${head}<p class="hint">顶点不设工艺要求，请选择面、边或轴线。</p></div>`;
+    if(f.shape==='vertex')return `<div class="card">${head}</div>`;
     return `<div class="card">${head}${treatCard(p,f)}
       ${f.type==='EDGE'?'':`<div class="row c4">${ACTIVE.map(x=>`<button data-datum="${x}" data-of="${f.id}">${f.isDatum===x?'✓ ':''}基准 ${x}</button>`).join('')}<button data-datum="" data-of="${f.id}">取消基准</button></div>`}
       ${f.tolerances.length?f.tolerances.map((t,i)=>reqRow(f,t,i)).join(''):'<p class="hint">暂无工艺要求。</p>'}
       <button class="pri" data-add="${f.id}">+ 添加新要求</button></div>`}).join('')+'<button class="wide" data-clr>清除选择</button>';
 }
+
 const proc=$('#proc');
 const rowOf=el=>{const r=el.closest('[data-row]');return r?[locate(r.dataset.f)[1],+r.dataset.i]:[]};
-function commit(el){   /* 立即写回当前要素的 tolerances 数组 */
+function commit(el){
   const [f,i]=rowOf(el);if(!f)return;const t=f.tolerances[i],k=el.dataset.k;
   if(el.tagName==='INPUT'){if(k==='fitCode')t.fitCode=el.value.trim();else{const v=parseFloat(el.value);t[k]=isNaN(v)?null:v}}
-  else{t[k]=el.value;
-    if(k==='type'){t.unit=defUnit(t.type);if(!NEEDS_DATUM.includes(t.type))delete t.datumRef;
-      if(t.type==='COATING'&&!t.coating)t.coating=COATINGS[0];if(t.type==='FIT_CODE'&&!t.fitCode)t.fitCode='H7/g6'}
-    if(k==='datumRef'&&!t.datumRef)delete t.datumRef}
-  renderTree();renderJson();
+  else{t[k]=el.value;if(k==='type'){t.unit=defUnit(t.type);if(!NEEDS_DATUM.includes(t.type))delete t.datumRef}if(k==='datumRef'&&!t.datumRef)delete t.datumRef}
+  renderTree();
 }
 proc.addEventListener('input',e=>{
   if(e.target.dataset.es!==undefined){setTreat(e.target.dataset.of,{size:parseFloat(e.target.value)});return}
-  if(e.target.id==='pv'){pairVal=parseFloat(e.target.value)||0;return}
   if(e.target.tagName==='INPUT'&&e.target.dataset.k)commit(e.target);
 });
 proc.addEventListener('change',e=>{
@@ -460,23 +534,365 @@ proc.addEventListener('change',e=>{
 proc.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   if(b.dataset.clr!==undefined){sel=[];showHL();render();return}
-  if(b.dataset.add){const [,f]=locate(b.dataset.add);f.tolerances.push({type:defType[f.shape],upper:null,lower:null,unit:'mm'})}
+  if(b.dataset.add){const [,f]=locate(b.dataset.add);f.tolerances.push({type:f.shape==='cyl'?'CYLINDRICITY':'FLATNESS',upper:null,lower:null,unit:'mm'})}
   else if(b.dataset.rm!==undefined){const [f,i]=rowOf(b);f.tolerances.splice(i,1)}
-  else if(b.dataset.swap!==undefined){sel=[sel[1],sel[0]];showHL()}
-  else if(b.dataset.pair){
-    const [[,f1],[,f2]]=sel.map(locate);if(!(pairVal>0)){$('#msg').textContent='请先输入大于 0 的公差值。';return}
-    if(!f2.isDatum){const L=freeLetter();if(!L){$('#msg').textContent='基准 A–C 已全部占用，请先取消一个基准。';return}f2.isDatum=L;refreshBadges()}
-    f1.tolerances.push({type:b.dataset.pair,upper:pairVal,lower:null,unit:'mm',datumRef:f2.isDatum})}
   else if(b.dataset.datum!==undefined){const [,f]=locate(b.dataset.of),L=b.dataset.datum;
     prims.forEach(q=>allFeats(q).forEach(x=>{if(L&&x.isDatum===L)delete x.isDatum}));if(L)f.isDatum=L;else delete f.isDatum;refreshBadges()}
   render();
 });
 
-function renderJson(){
-  $('#json').textContent=JSON.stringify(prims.map(({subFeatures:sf,open,q,...r})=>({...r,subFeatures:Object.fromEntries(Object.entries(sf).map(([k,l])=>[k,l.map(({shape,ref,...f})=>f)]))})),null,1);
-}
-function render(){refreshRefs();renderTree();renderProc();renderJson()}
+function render(){refreshRefs();renderTree();renderProc()}
 $('#theme').onclick=()=>{const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=dark?'light':'dark'};
+
+/* 导出控制 */
+const exBar=$('#exbar'),exBtn=$('#exbtn');
+const setExOpen=on=>exBar.classList.toggle('open',on);
+exBtn.onclick=e=>{e.stopPropagation();setExOpen(!exBar.classList.contains('open'))};
+document.addEventListener('click',e=>{if(!exBar.contains(e.target))setExOpen(false)});
+
+$('#exmenu').onclick=e=>{
+  const b=e.target.closest('[data-ex]');if(!b)return;
+  setExOpen(false);
+  if(b.dataset.ex==='stl')exportSTL();
+  else if(b.dataset.ex==='pdf')openPdfModal();
+};
+
+const nfmt=v=>{const s=Number(v).toFixed(2).replace(/\.?0+$/,'');return s===''?'0':s};
+const stamp=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}`};
+function downloadBlob(name,blob){
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2500);
+}
+function forEachTri(geom,fn){
+  const pos=geom.attributes.position;if(!pos||!pos.count)return;
+  const idx=geom.index,n=idx?idx.count:pos.count,va=V3(),vb=V3(),vc=V3();
+  for(let i=0;i<n;i+=3){
+    const ia=idx?idx.getX(i):i,ib=idx?idx.getX(i+1):i+1,ic=idx?idx.getX(i+2):i+2;
+    va.fromBufferAttribute(pos,ia);vb.fromBufferAttribute(pos,ib);vc.fromBufferAttribute(pos,ic);
+    fn(va.clone(),vb.clone(),vc.clone());
+  }
+}
+function bakedGeom(mesh){
+  const g=mesh.geometry.clone();mesh.updateMatrixWorld();g.applyMatrix4(mesh.matrixWorld);return g;
+}
+function mergeGeoms(gs){
+  const pos=[],ix=[];let base=0;
+  for(const g of gs){
+    const p=g.attributes.position,id=g.index;
+    for(let i=0;i<p.count;i++)pos.push(p.getX(i),p.getY(i),p.getZ(i));
+    if(id)for(let i=0;i<id.count;i++)ix.push(id.getX(i)+base);
+    else for(let i=0;i<p.count;i++)ix.push(base+i);
+    base+=p.count;
+  }
+  const ng=new THREE.BufferGeometry();
+  ng.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  if(ix.length)ng.setIndex(ix);
+  return ng;
+}
+function collectPrintGeom(){
+  if(result&&result.geometry?.attributes?.position?.count)return bakedGeom(result);
+  const solids=prims.filter(p=>p.role==='SOLID');
+  return solids.length?mergeGeoms(solids.map(p=>geo(p))):null;
+}
+function geomToSTL(geom){
+  const tris=[],ab=V3(),ac=V3(),n=V3();
+  forEachTri(geom,(a,b,c)=>{
+    ab.subVectors(b,a);ac.subVectors(c,a);n.copy(ab).cross(ac);
+    if(n.lengthSq()>1e-20){n.normalize();tris.push([n.clone(),a,b,c])}
+  });
+  const buf=new ArrayBuffer(84+tris.length*50),dv=new DataView(buf);
+  const hdr=new TextEncoder().encode('LightCAD binary STL (mm)');
+  for(let i=0;i<hdr.length&&i<80;i++)dv.setUint8(i,hdr[i]);
+  dv.setUint32(80,tris.length,true);
+  let o=84;const f=v=>{dv.setFloat32(o,v,true);o+=4};
+  for(const [nn,a,b,c] of tris){
+    f(nn.x);f(nn.y);f(nn.z);f(a.x);f(a.y);f(a.z);f(b.x);f(b.y);f(b.z);f(c.x);f(c.y);f(c.z);
+    dv.setUint16(o,0,true);o+=2;
+  }
+  return {blob:new Blob([buf],{type:'model/stl'}),faces:tris.length};
+}
+function exportSTL(){
+  const g=collectPrintGeom();if(!g){$('#msg').textContent='未发现有效实体网格。';return}
+  const {blob,faces}=geomToSTL(g);
+  downloadBlob(`LightCAD-${stamp()}.stl`,blob);
+  $('#msg').textContent=`已导出 STL（${faces} 个三角面）。`;
+}
+
+/* 导出标准工程图 PDF 弹窗 */
+function openPdfModal(){
+  const solid=prims.find(p=>p.role==='SOLID');
+  if(!solid){$('#msg').textContent='请先生成至少一个实体。';return}
+  $('#pdf-part-name').value=solid.name;
+  $('#pdf-dwg-no').value=`DWG-${stamp()}-001`;
+  $('#modal-backdrop').classList.add('open');
+}
+$('#close-modal').onclick=()=>$('#modal-backdrop').classList.remove('open');
+$('#btn-print-pdf').onclick=()=>{
+  $('#modal-backdrop').classList.remove('open');
+  generateStandardSanShiTuPdf();
+};
+
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function drawDimH(x1, x2, y, val, extY) {
+  const L = Math.min(x1, x2), R = Math.max(x1, x2), m = (L + R) / 2;
+  const eY = extY ?? (y - 12);
+  return `<g class="dim">
+    <line x1="${L}" y1="${eY}" x2="${L}" y2="${y + 2}"/>
+    <line x1="${R}" y1="${eY}" x2="${R}" y2="${y + 2}"/>
+    <line x1="${L}" y1="${y}" x2="${R}" y2="${y}"/>
+    <polygon points="${L},${y} ${L+4},${y-1.5} ${L+4},${y+1.5}"/>
+    <polygon points="${R},${y} ${R-4},${y-1.5} ${R-4},${y+1.5}"/>
+    <text x="${m}" y="${y-3}" text-anchor="middle">${nfmt(val)}</text>
+  </g>`;
+}
+
+function drawDimV(x, y1, y2, val, extX) {
+  const T = Math.min(y1, y2), B = Math.max(y1, y2), m = (T + B) / 2;
+  const eX = extX ?? (x - 12);
+  return `<g class="dim">
+    <line x1="${eX}" y1="${T}" x2="${x + 2}" y2="${T}"/>
+    <line x1="${eX}" y1="${B}" x2="${x + 2}" y2="${B}"/>
+    <line x1="${x}" y1="${T}" x2="${x}" y2="${B}"/>
+    <polygon points="${x},${T} ${x-1.5},${T+4} ${x+1.5},${T+4}"/>
+    <polygon points="${x},${B} ${x-1.5},${B-4} ${x+1.5},${B-4}"/>
+    <text x="${x+5}" y="${m}" text-anchor="start" dominant-baseline="middle">${nfmt(val)}</text>
+  </g>`;
+}
+
+/* =========================================================================
+   终极工业级国标【标准三视图】引擎 (主视、俯视、左视完全对齐，切孔真实裁切)
+   ========================================================================= */
+function generateStandardSanShiTuPdf(){
+  const solid = prims.find(p=>p.role==='SOLID');
+  if(!solid) return;
+  const holes = prims.filter(p=>p.role==='HOLE');
+
+  const d = solid.dimensions;
+  const W_len = d.length || (d.radius ? d.radius * 2 : 40);
+  const D_wid = d.width  || (d.radius ? d.radius * 2 : 30);
+  const H_hgt = d.height || (d.radius ? d.radius * 2 : 20);
+
+  const PW = 297, PH = 210; // A4 标准图幅 (mm)
+  const x0 = 20, y0 = 10, x1 = PW - 10, y1 = PH - 10;
+  const tbW = 140, tbH = 36;
+  const tbx = x1 - tbW, tby = y1 - tbH;
+
+  // 绘图区尺寸：需同时容纳主视图、俯视图、左视图
+  const availW = tbx - x0 - 30;
+  const availH = y1 - y0 - 30;
+  const totalW = W_len + D_wid + 35;
+  const totalH = H_hgt + D_wid + 35;
+
+  let s = Math.min(availW / Math.max(totalW, 1), availH / Math.max(totalH, 1));
+  let scaleText = '1:1';
+  if (s < 0.75) { s = 0.5; scaleText = '1:2'; }
+  else if (s > 1.8) { s = 2; scaleText = '2:1'; }
+  else { s = 1; }
+
+  const fW = W_len * s, fH = H_hgt * s;
+  const tW = W_len * s, tH = D_wid * s;
+  const lW = D_wid * s, lH = H_hgt * s;
+
+  // 严格三视图对齐排布：
+  // 1. 主视图 (Front): (fx0, fy0)
+  // 2. 俯视图 (Top):   (tx0, ty0) 与主视【长对正】(tx0 = fx0)
+  // 3. 左视图 (Left):  (lx0, ly0) 与主视【高平齐】(ly0 = fy0)
+  const fx0 = x0 + 15;
+  const fy0 = y0 + 18;
+  const tx0 = fx0;
+  const ty0 = fy0 + fH + 28;
+  const lx0 = fx0 + fW + 28;
+  const ly0 = fy0;
+
+  // 读取真实的倒角与圆角设置 (检查各棱边)
+  let chamferC = 0, filletR = 0;
+  allFeats(solid).forEach(f=>{
+    if(f.treatment && f.treatment.type !== 'NONE' && f.treatment.size > 0){
+      if(f.treatment.type === 'CHAMFER') chamferC = Math.max(chamferC, f.treatment.size);
+      if(f.treatment.type === 'FILLET')  filletR  = Math.max(filletR,  f.treatment.size);
+    }
+  });
+
+  // 1. 生成俯视图轮廓 (包含切削孔真实咬角，绝对不画空气悬空圆)
+  let topCuts = '';
+  let topHoleCircles = '';
+  let frontHolesSvg = '';
+  let leftHolesSvg = '';
+
+  holes.forEach(hole=>{
+    const hd = hole.dimensions;
+    const hr = (hd.radius || 5);
+    const hrPix = hr * s;
+    const dx = (hole.center.x - solid.center.x);
+    const dy = (hole.center.y - solid.center.y);
+
+    const top_cx = tx0 + tW / 2 + dx * s;
+    const top_cy = ty0 + tH / 2 - dy * s;
+    const frt_cx = fx0 + fW / 2 + dx * s;
+    const lft_cy = lx0 + lW / 2 - dy * s;
+
+    const isInsideTop = (Math.abs(dx) <= (W_len/2 - hr)) && (Math.abs(dy) <= (D_wid/2 - hr));
+
+    if (isInsideTop) {
+      topHoleCircles += `
+        <circle cx="${top_cx}" cy="${top_cy}" r="${hrPix}" class="vl-box"/>
+        <line x1="${top_cx - hrPix - 3}" y1="${top_cy}" x2="${top_cx + hrPix + 3}" y2="${top_cy}" class="centerline"/>
+        <line x1="${top_cx}" y1="${top_cy - hrPix - 3}" x2="${top_cx}" y2="${top_cy + hrPix + 3}" class="centerline"/>
+      `;
+    } else {
+      // 边缘缺口：只在实体内部留切削线，空气中绝无圆线！
+      topCuts += `
+        <g clip-path="url(#part-top-clip)">
+          <circle cx="${top_cx}" cy="${top_cy}" r="${hrPix}" class="vl-box" fill="#fff"/>
+        </g>
+        <line x1="${top_cx - hrPix}" y1="${top_cy}" x2="${top_cx + hrPix}" y2="${top_cy}" class="centerline"/>
+        <line x1="${top_cx}" y1="${top_cy - hrPix}" x2="${top_cx}" y2="${top_cy + hrPix}" class="centerline"/>
+      `;
+    }
+
+    frontHolesSvg += `
+      <line x1="${frt_cx - hrPix}" y1="${fy0}" x2="${frt_cx - hrPix}" y2="${fy0 + fH}" class="hl-dashed"/>
+      <line x1="${frt_cx + hrPix}" y1="${fy0}" x2="${frt_cx + hrPix}" y2="${fy0 + fH}" class="hl-dashed"/>
+      <line x1="${frt_cx}" y1="${fy0 - 3}" x2="${frt_cx}" y2="${fy0 + fH + 3}" class="centerline"/>
+    `;
+
+    leftHolesSvg += `
+      <line x1="${lft_cy - hrPix}" y1="${ly0}" x2="${lft_cy - hrPix}" y2="${ly0 + lH}" class="hl-dashed"/>
+      <line x1="${lft_cy + hrPix}" y1="${ly0}" x2="${lft_cy + hrPix}" y2="${ly0 + lH}" class="hl-dashed"/>
+      <line x1="${lft_cy}" y1="${ly0 - 3}" x2="${lft_cy}" y2="${ly0 + lH + 3}" class="centerline"/>
+    `;
+  });
+
+  let filletTopFront = '', filletBotFront = '';
+  if (filletR > 0) {
+    const rPix = filletR * s;
+    filletBotFront = `<path d="M ${fx0} ${fy0+fH-rPix} Q ${fx0} ${fy0+fH} ${fx0+rPix} ${fy0+fH}" class="vl-box"/>`;
+  }
+
+  const dimFrontX = drawDimH(fx0, fx0 + fW, fy0 + fH + 15, W_len, fy0 + fH);
+  const dimFrontZ = drawDimV(fx0 + fW + 15, fy0, fy0 + fH, H_hgt, fx0 + fW);
+  const dimTopY   = drawDimV(tx0 + tW + 15, ty0, ty0 + tH, D_wid, tx0 + tW);
+  const dimLeftY  = drawDimH(lx0, lx0 + lW, ly0 + lH + 15, D_wid, ly0 + lH);
+
+  const techNotes = [];
+  if ($('#chk-deburr').checked) techNotes.push('去毛刺，锐边倒钝。');
+  if ($('#chk-corner').checked) techNotes.push('未注倒角均为 C1，未注圆角均为 R2。');
+  if ($('#chk-gbt').checked)    techNotes.push('未注尺寸公差按 GB/T 1804-m 执行。');
+  const st = $('#pdf-surface-treat').value.trim(); if(st) techNotes.push(`表面处理 / 热处理：${st}。`);
+  const ct = $('#pdf-custom-note').value.trim(); if(ct) techNotes.push(ct);
+  if (chamferC > 0) techNotes.push(`图示倒角为 C${nfmt(chamferC)}。`);
+  if (filletR > 0)  techNotes.push(`图示圆角为 R${nfmt(filletR)}。`);
+
+  prims.forEach(p=>allFeats(p).forEach(f=>{
+    f.tolerances.forEach(t=>{
+      let v = (t.upper != null && t.lower != null) ? `${t.upper>=0?'+':''}${nfmt(t.upper)}/${nfmt(t.lower)}` : (t.upper != null ? nfmt(t.upper) : '');
+      techNotes.push(`指定表面${TN[t.type]||t.type}：${v} ${t.unit||''} ${t.datumRef?'(基准 '+t.datumRef+')':''}。`);
+    });
+  }));
+
+  const notesSvg = techNotes.slice(0, 9).map((txt, i) =>
+    `<text x="${tbx + 4}" y="${tby - 6 - (techNotes.slice(0, 9).length - i - 1) * 5}" class="nt">${i + 1}. ${esc(txt)}</text>`
+  ).join('');
+
+  const partName = $('#pdf-part-name').value || '结构件';
+  const dwgNo    = $('#pdf-dwg-no').value    || 'DWG-001';
+  const material = $('#pdf-material').value  || '45# 钢';
+  const author   = $('#pdf-author').value    || '设计员';
+
+  const titleBlockSvg = `
+  <g class="tb">
+    <rect x="${tbx}" y="${tby}" width="${tbW}" height="${tbH}" fill="#fff" stroke="#000" stroke-width="0.5"/>
+    <line x1="${tbx}" y1="${tby+12}" x2="${x1}" y2="${tby+12}" stroke="#000" stroke-width="0.3"/>
+    <line x1="${tbx}" y1="${tby+24}" x2="${x1}" y2="${tby+24}" stroke="#000" stroke-width="0.3"/>
+    <line x1="${tbx+60}" y1="${tby}" x2="${tbx+60}" y2="${tby+24}" stroke="#000" stroke-width="0.3"/>
+    <line x1="${tbx+105}" y1="${tby}" x2="${tbx+105}" y2="${y1}" stroke="#000" stroke-width="0.3"/>
+    <line x1="${tbx+30}" y1="${tby+24}" x2="${tbx+30}" y2="${y1}" stroke="#000" stroke-width="0.3"/>
+    <line x1="${tbx+65}" y1="${tby+24}" x2="${tbx+65}" y2="${y1}" stroke="#000" stroke-width="0.3"/>
+
+    <text x="${tbx+3}" y="${tby+4.5}" class="th">图样代号</text>
+    <text x="${tbx+3}" y="${tby+9.5}" class="td">${esc(dwgNo)}</text>
+    <text x="${tbx+63}" y="${tby+4.5}" class="th">零件名称</text>
+    <text x="${tbx+63}" y="${tby+9.5}" class="td">${esc(partName)}</text>
+
+    <text x="${tbx+3}" y="${tby+16.5}" class="th">材料</text>
+    <text x="${tbx+3}" y="${tby+21.5}" class="td">${esc(material)}</text>
+    <text x="${tbx+63}" y="${tby+16.5}" class="th">比例</text>
+    <text x="${tbx+63}" y="${tby+21.5}" class="td">${scaleText}</text>
+
+    <text x="${tbx+3}" y="${tby+28.5}" class="th">设计</text>
+    <text x="${tbx+3}" y="${tby+33.5}" class="td">${esc(author)}</text>
+    <text x="${tbx+33}" y="${tby+28.5}" class="th">日期</text>
+    <text x="${tbx+33}" y="${tby+33.5}" class="td">${stamp()}</text>
+    <text x="${tbx+68}" y="${tby+28.5}" class="th">单位</text>
+    <text x="${tbx+68}" y="${tby+33.5}" class="td">LightCAD</text>
+
+    <circle cx="${x1-16}" cy="${tby+18}" r="4.5" fill="none" stroke="#000" stroke-width="0.3"/>
+    <circle cx="${x1-16}" cy="${tby+18}" r="2.2" fill="none" stroke="#000" stroke-width="0.3"/>
+    <polygon points="${x1-29},${tby+15.8} ${x1-23},${tby+14} ${x1-23},${tby+22} ${x1-29},${tby+20.2}" fill="none" stroke="#000" stroke-width="0.3"/>
+  </g>`;
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${PW}mm" height="${PH}mm" viewBox="0 0 ${PW} ${PH}">
+  <defs>
+    <clipPath id="part-top-clip">
+      <rect x="${tx0}" y="${ty0}" width="${tW}" height="${tH}"/>
+    </clipPath>
+  </defs>
+  <style>
+    text{font-family:"SimSun","Songti SC","Microsoft YaHei",serif;fill:#000}
+    .th{font-size:2.4px;fill:#555}
+    .td{font-size:3.2px;font-weight:bold}
+    .nt{font-size:2.6px}
+    .vh{font-size:3.2px;font-weight:bold}
+    .vl-box{fill:none;stroke:#000;stroke-width:0.45;stroke-linejoin:round;stroke-linecap:round}
+    .hl-dashed{stroke:#555;stroke-width:0.28;stroke-dasharray:2.2 1.4}
+    .centerline{stroke:#b4570f;stroke-width:0.22;stroke-dasharray:5 1 1 1}
+    .dim line{stroke:#0d6b78;stroke-width:0.22}
+    .dim polygon{fill:#0d6b78}
+    .dim text{font-size:3.2px;fill:#0d6b78;font-weight:bold;font-family:ui-monospace,Consolas,monospace}
+  </style>
+
+  <rect x="5" y="5" width="${PW-10}" height="${PH-10}" fill="none" stroke="#000" stroke-width="0.3"/>
+  <rect x="${x0}" y="${y0}" width="${x1-x0}" height="${y1-y0}" fill="none" stroke="#000" stroke-width="0.6"/>
+
+  <!-- 1. 主视图 (Front · XZ) -->
+  <text x="${fx0}" y="${fy0-6}" class="vh">主视图 (Front · XZ)</text>
+  <rect x="${fx0}" y="${fy0}" width="${fW}" height="${fH}" class="vl-box"/>
+  ${filletBotFront}
+  ${frontHolesSvg}
+  ${dimFrontX}
+  ${dimFrontZ}
+
+  <!-- 2. 俯视图 (Top · XY) - 长对正 -->
+  <text x="${tx0}" y="${ty0-6}" class="vh">俯视图 (Top · XY)</text>
+  <rect x="${tx0}" y="${ty0}" width="${tW}" height="${tH}" class="vl-box"/>
+  ${topCuts}
+  ${topHoleCircles}
+  ${dimTopY}
+
+  <!-- 3. 左视图 (Left · YZ) - 高平齐、宽相等 -->
+  <text x="${lx0}" y="${ly0-6}" class="vh">左视图 (Left · YZ)</text>
+  <rect x="${lx0}" y="${ly0}" width="${lW}" height="${lH}" class="vl-box"/>
+  ${leftHolesSvg}
+  ${dimLeftY}
+
+  <!-- 技术要求与标题栏 -->
+  <text x="${tbx+4}" y="${tby-8-(techNotes.slice(0,9).length)*5}" style="font-size:3.2px;font-weight:bold">技术要求：</text>
+  ${notesSvg}
+  ${titleBlockSvg}
+</svg>`;
+
+  const pWin = window.open('', '_blank');
+  if(!pWin){ $('#msg').textContent='弹窗被浏览器拦截，请允许弹出窗口。'; return; }
+  pWin.document.open();
+  pWin.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${dwgNo}_${partName}_工程图</title>
+  <style>@page{size:A4 landscape;margin:0}html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#fff}svg{width:100vw;height:100vh;display:block}</style>
+  </head><body>${svg}</body></html>`);
+  pWin.document.close();
+  pWin.focus();
+  setTimeout(()=>{ pWin.print(); }, 400);
+}
+
 render();
 </script>
 </body>
