@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LightCAD 轻量化CAD</title>
+<style>
+:root{--bg:#f3f1ec;--pn:#fbfaf7;--ink:#1d2430;--mut:#66707d;--ln:#d8d4ca;--ac:#0d6b78;--ac2:#b4570f;--vp:#e4e2dc;--sel:#cfe6ea;--on:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181f;--pn:#1b212b;--ink:#e6e9ee;--mut:#8c95a3;--ln:#2e3644;--ac:#4fc0cf;--ac2:#f0a04b;--vp:#10141a;--sel:#1f3a42;--on:#10141a}}
+:root[data-theme="dark"]{--bg:#14181f;--pn:#1b212b;--ink:#e6e9ee;--mut:#8c95a3;--ln:#2e3644;--ac:#4fc0cf;--ac2:#f0a04b;--vp:#10141a;--sel:#1f3a42;--on:#10141a}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.5 "PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif}
+#app{display:flex;height:100%}
+#panel{width:360px;max-width:100%;overflow-y:auto;background:var(--pn);border-right:1px solid var(--ln);padding:16px}
+#view{flex:1;position:relative;min-width:0;background:var(--vp);overflow:hidden}
+#view canvas{display:block;width:100%;height:100%;touch-action:none}
+@media(max-width:800px){#app{flex-direction:column-reverse}#panel{width:100%;height:55%;border-right:0;border-top:1px solid var(--ln)}#view{flex:none;height:45%}}
+h1{font:600 20px ui-monospace,Menlo,monospace;margin:0}
+h2{font-size:14px;font-weight:600;margin:18px 0 8px;padding-top:12px;border-top:1px solid var(--ln);display:flex;justify-content:space-between;align-items:center}
+.sub,.hint{color:var(--mut);font-size:12px;margin:4px 0}
+label{display:block;font-size:12px;color:var(--mut);margin:8px 0 2px}
+input,select{width:100%;padding:6px 8px;border:1px solid var(--ln);border-radius:4px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus-visible,select:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+input:disabled,select:disabled{opacity:.6}
+.row{display:grid;gap:8px}.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:1fr 1fr 1fr}.c4{grid-template-columns:repeat(4,1fr)}
+.seg{display:flex;border:1px solid var(--ln);border-radius:4px;overflow:hidden}
+.seg label{flex:1;margin:0;text-align:center;padding:6px;cursor:pointer;color:var(--ink)}
+.seg input{display:none}.seg label:has(input:checked){background:var(--ac);color:var(--on);font-weight:600}
+button{font:inherit;cursor:pointer;border:1px solid var(--ln);background:var(--bg);color:var(--ink);border-radius:4px;padding:6px 10px}
+button.pri{background:var(--ac);border-color:var(--ac);color:var(--on);font-weight:600;width:100%;margin-top:12px;padding:9px}
+button.wide{width:100%;margin-top:8px}
+.badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--ac2);color:#fff}
+.chip{padding:4px 8px;margin:4px 0;border-left:3px solid var(--ac);background:var(--sel);border-radius:0 4px 4px 0;font-size:12.5px}
+.tol{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dashed var(--ln)}
+details{margin-top:14px}pre{overflow:auto;font-size:11px;max-height:200px;background:var(--bg);padding:8px;border-radius:4px}
+.card{border:1px solid var(--ln);border-radius:6px;padding:8px;margin-bottom:10px}
+.card button{padding:5px 6px}.card button.pri{margin-top:10px;padding:9px}
+.req{margin-top:8px;padding:8px;border-radius:4px;background:var(--bg);border:1px solid var(--ln)}
+.req button{padding:4px 0}
+.ck{width:auto;margin:0 6px 0 0;vertical-align:-2px}
+.pair{border-color:var(--ac2)}
+.coord{margin:6px 0;padding:6px 8px;background:var(--bg);border-radius:4px;border:1px solid var(--ln)}
+.kv{display:flex;justify-content:space-between;gap:8px;font:12px/1.55 ui-monospace,Menlo,monospace}.kv span{color:var(--mut);flex:none}.kv b{font-weight:500;text-align:right}
+.it i{font-style:normal;color:var(--ac2);font-weight:700}.it.on i{color:#fff}
+/* floating feature tree */
+#ft{position:absolute;z-index:5;top:12px;left:12px;width:290px;max-width:calc(100% - 24px);max-height:calc(100% - 24px);display:flex;flex-direction:column;
+border:1px solid color-mix(in srgb,var(--ln) 80%,transparent);border-radius:8px;
+background:color-mix(in srgb,var(--pn) 58%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+#fth{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;font-weight:600}
+#fth button{padding:2px 8px}
+#ftb{overflow-y:auto;padding:0 8px 8px}
+#ft.shut #ftb{display:none}
+.ph{display:flex;align-items:center;gap:4px;margin-top:6px;font-weight:600;font-size:13px}
+.ph .pn{flex:1;cursor:pointer;padding:2px 6px;border-radius:4px}.ph .pn:hover{background:var(--sel)}
+.ph.ed .pn{background:var(--ac);color:var(--on)}
+.ph button{border:0;background:transparent;padding:2px 6px}
+.gt{color:var(--mut);font-size:12px;margin:4px 0 1px 22px}
+.it{padding:2px 8px;margin-left:30px;border-left:2px solid var(--ln);cursor:pointer;border-radius:0 4px 4px 0;font-size:13px}
+.it:hover{background:var(--sel)}.it.on{background:var(--ac2);color:#fff;border-left-color:var(--ac2);font-weight:600}
+.dt{font-weight:700;margin-left:4px}
+</style>
+<script type="importmap">
+{"imports":{
+"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+"three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+"three-mesh-bvh":"https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.7.3/build/index.module.js",
+"three-bvh-csg":"https://cdn.jsdelivr.net/npm/three-bvh-csg@0.0.16/build/index.module.js"}}
+</script>
+</head>
+<body>
+<div id="app">
+<aside id="panel">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h1>LightCAD</h1><button id="theme" aria-label="切换明暗主题">◐ 主题</button></div>
+  <p class="sub">先生成实体，再在左上角设计树中选择要素，动态添加工艺要求。</p>
+
+  <h2><span>实体参数设置</span><span class="badge" id="mbadge" hidden>编辑模式</span></h2>
+  <div id="pform">
+    <label for="type">基本体类型</label>
+    <select id="type">
+      <option value="BOX">长方体</option><option value="CYLINDER">圆柱体</option><option value="SPHERE">球体</option>
+      <option value="CONE">圆锥 / 圆台</option><option value="SLOT">键槽 / 胶囊体</option>
+    </select>
+    <label>布尔角色</label>
+    <div class="seg"><label><input type="radio" name="role" value="SOLID" checked>实体 (加法)</label><label><input type="radio" name="role" value="HOLE">切削孔 (减法)</label></div>
+    <label for="wp">基准面 (参考平面)</label>
+    <select id="wp"></select>
+    <label for="anchor">定位参考点</label>
+    <select id="anchor"></select>
+    <label>相对偏移 X / Y / Z (mm，相对定位参考点)</label>
+    <div class="row c3"><input id="cx" type="number" value="0" aria-label="中心 X"><input id="cy" type="number" value="0" aria-label="中心 Y"><input id="cz" type="number" value="0" aria-label="中心 Z"></div>
+    <div id="dims" class="row c2"></div>
+    
+  </div>
+  <button class="pri" id="gen">生成实体</button>
+  <button class="wide" id="exit" hidden>完成编辑，新建实体</button>
+  <p class="hint" id="msg">切削孔只会切除其之前生成的实体，请先生成实体。</p>
+
+  <h2><span>工艺公差面板</span></h2>
+  <div id="proc"></div>
+  <datalist id="fits"><option value="H7/g6"><option value="H7/h6"><option value="H7/k6"><option value="H7/n6"><option value="H7/p6"><option value="H8/f7"><option value="H9/d9"><option value="G7/h6"></datalist>
+  <details><summary>数据模型 (JSON)</summary><pre id="json"></pre></details>
+</aside>
+<main id="view">
+  <div id="ft"><div id="fth"><span>设计树</span><button id="ftt" aria-label="折叠或展开设计树">▾ 折叠</button></div><div id="ftb"></div></div>
+</main>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {Brush,Evaluator,ADDITION,SUBTRACTION} from 'three-bvh-csg';
+
+const $=s=>document.querySelector(s), V3=(x,y,z)=>new THREE.Vector3(x,y,z);
+const FIELDS={BOX:[['length','长度 (X)',40],['width','宽度 (Y)',30],['height','高度 (Z)',20]],
+CYLINDER:[['radius','半径 (R)',10],['height','高度 (H)',30]],SPHERE:[['radius','半径 (R)',15]],
+CONE:[['radius','底部半径 (R1)',12],['topRadius','顶部半径 (R2)',6],['height','高度 (H)',25]],SLOT:[['radius','端部半径 (R)',8],['height','总长度 (H)',40]]};
+const NAMES={BOX:['长方体','长方体切削孔'],CYLINDER:['圆柱体','圆柱切削孔'],SPHERE:['球体','球形切削孔'],CONE:['圆锥台','圆锥切削孔'],SLOT:['胶囊体','槽形切削孔']};
+const TN={FLATNESS:'平面度',STRAIGHTNESS:'直线度',ROUNDNESS:'圆度',CYLINDRICITY:'圆柱度',PROFILE:'面轮廓度',
+PERPENDICULARITY:'垂直度',PARALLELISM:'平行度',ANGULARITY:'倾斜度',CONCENTRICITY:'同心度 / 同轴度',POSITION:'位置度',SYMMETRY:'对称度',RUNOUT:'圆跳动',
+RA:'表面粗糙度 Ra',RZ:'表面粗糙度 Rz',HARDNESS:'热处理硬度 (HRC)',COATING:'表面涂覆',FIT_CODE:'标准配合代号',DEVIATION:'自定义尺寸偏差 (±)'};
+const GROUPS=[['形状公差 (单要素)',['FLATNESS','STRAIGHTNESS','ROUNDNESS','CYLINDRICITY','PROFILE']],
+['方向与位置公差 (关联要素)',['PERPENDICULARITY','PARALLELISM','ANGULARITY','CONCENTRICITY','POSITION','SYMMETRY','RUNOUT']],
+['表面质量与热处理',['RA','RZ','HARDNESS','COATING']],['配合公差',['FIT_CODE','DEVIATION']]];
+const UNITS=[['mm','mm (毫米)'],['μm','μm (微米)'],['°','° (度数/倾斜角)'],['HRC','HRC (洛氏硬度)']];
+const NEEDS_DATUM=['PERPENDICULARITY','PARALLELISM','ANGULARITY','CONCENTRICITY','POSITION','SYMMETRY','RUNOUT'];  /* 需要基准引用 */
+const COATINGS=['阳极氧化','发黑','镀锌'],FITS=['H7/g6','H7/h6','H7/k6','H7/n6','H7/p6','H8/f7','H9/d9','G7/h6'],ACTIVE=['A','B','C'];
+const defUnit=t=>['RA','RZ','COATING'].includes(t)?'μm':t==='HARDNESS'?'HRC':'mm';   /* 智能默认单位 */
+const defType={plane:'FLATNESS',cyl:'CYLINDRICITY',axis:'STRAIGHTNESS',edge:'STRAIGHTNESS'};
+
+/* ---------- 场景 ---------- */
+const view=$('#view'),renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));view.appendChild(renderer.domElement);
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(45,1,0.1,5000);
+camera.up.set(0,0,1);camera.position.set(90,-110,80);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
+scene.add(new THREE.HemisphereLight(0xffffff,0x556070,1.1));
+const dl=new THREE.DirectionalLight(0xffffff,1.6);dl.position.set(60,-80,120);scene.add(dl);
+const grid=new THREE.GridHelper(200,20,0x7a8594,0x4a5463);grid.rotation.x=Math.PI/2;grid.material.transparent=true;grid.material.opacity=.35;scene.add(grid);
+scene.add(new THREE.AxesHelper(30));
+const solidMat=new THREE.MeshStandardMaterial({color:0x8fa9c9,metalness:.25,roughness:.45});
+const ghostMat=new THREE.MeshBasicMaterial({color:0xd04a3a,transparent:true,opacity:.22,depthWrite:false});
+const hlMat=new THREE.MeshBasicMaterial({color:0xffb020,transparent:true,opacity:.6,depthTest:false,side:THREE.DoubleSide});
+const ghosts=new THREE.Group(),hlGroup=new THREE.Group(),badges=new THREE.Group();scene.add(ghosts,hlGroup,badges);
+function resize(){const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}
+new ResizeObserver(resize).observe(view);resize();
+renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
+
+/* ---------- 数据模型 ---------- */
+let prims=[],counter=0,sel=[],hov=null,editId=null,result=null;
+const ev=new Evaluator();
+const wpQ=wp=>new THREE.Quaternion().setFromEuler(wp==='YZ'?new THREE.Euler(0,Math.PI/2,0):wp==='XZ'?new THREE.Euler(-Math.PI/2,0,0):new THREE.Euler());
+const allFeats=p=>Object.values(p.subFeatures).flat();
+function locate(fid){for(const p of prims)for(const f of allFeats(p))if(f.id===fid)return [p,f];return []}
+
+const W=(p,v)=>v.clone().applyQuaternion(p.q).add(V3(p.center.x,p.center.y,p.center.z));  /* 局部→世界 */
+const BC=[[-1,-1],[1,-1],[1,1],[-1,1]];
+/* 局部坐标下的特征几何 (Z 为拉伸轴) */
+function localGeom(p,f){
+  const d=p.dimensions,[k,a]=f.ref.split(':'),o={};
+  if(p.type==='BOX'){
+    const hx=d.length/2,hy=d.width/2,hz=d.height/2,h=[hx,hy,hz];
+    if(k==='f'){const ax='xyz'.indexOf(a[1]),s=a[0]==='+'?1:-1,ob=[0,1,2].filter(i=>i!==ax),nn=[0,0,0];nn[ax]=s;
+      const pt=(u,v)=>{const x=[0,0,0];x[ax]=s*h[ax];x[ob[0]]=u*h[ob[0]];x[ob[1]]=v*h[ob[1]];return V3(x[0],x[1],x[2])};
+      o.c=pt(0,0);o.n=V3(nn[0],nn[1],nn[2]);o.pts=BC.map(([u,v])=>pt(u,v))}
+    else if(k==='e'){const i=+a;if(i<8){const z=(i<4?1:-1)*hz,A=BC[i%4],B=BC[(i+1)%4];o.a=V3(A[0]*hx,A[1]*hy,z);o.b=V3(B[0]*hx,B[1]*hy,z)}
+      else{const q=BC[i-8];o.a=V3(q[0]*hx,q[1]*hy,-hz);o.b=V3(q[0]*hx,q[1]*hy,hz)}}
+    else{const i=+a,q=BC[i%4];o.a=V3(q[0]*hx,q[1]*hy,(i<4?1:-1)*hz)}
+  }else if(p.type==='SPHERE'){if(k==='f'){o.c=V3(0,0,0)}else o.a=V3(0,0,0)}
+  else{
+    const h=d.height,rb=d.radius,rt=p.type==='CONE'?d.topRadius:d.radius;
+    if(k==='a'){o.a=V3(0,0,-h/2);o.b=V3(0,0,h/2)}
+    else if(k==='e'){const top=a==='top';o.c=V3(0,0,top?h/2:-h/2);o.r=top?rt:rb;o.circ=true}
+    else if(a==='side')o.c=V3(0,0,0);
+    else{const top=a==='top',z=top?h/2:-h/2,r=top?rt:rb;o.c=V3(0,0,z);
+      if(p.type!=='SLOT'){o.n=V3(0,0,top?1:-1);o.pts=[V3(r,0,z),V3(0,r,z),V3(-r,0,z),V3(0,-r,z)]}}
+  }
+  return o;
+}
+/* 解析基准面与定位参考点 → 世界姿态 p.q 与中心 p.center (按顺序，引用只指向更早的实体) */
+function resolve(p){
+  const wp=p.workplane,[rp,rf]=wp.length>2?locate(wp):[],g=rf&&localGeom(rp,rf);
+  let A=V3(0,0,0),S=V3(0,0,0);
+  if(g&&g.n){
+    const n=g.n.clone().applyQuaternion(rp.q).normalize(),ext=p.type==='SPHERE'?p.dimensions.radius:p.dimensions.height/2;
+    p.q=new THREE.Quaternion().setFromUnitVectors(V3(0,0,1),n);
+    S=n.multiplyScalar(p.role==='HOLE'?-(ext-.05):ext-.02);   /* 实体向外生长，切削孔向内切入 */
+    if(p.anchor==='faceC')A=W(rp,g.c);
+  }else p.q=wpQ(wp.length>2?'XY':wp);
+  if(p.anchor&&p.anchor!=='global'&&p.anchor!=='faceC'){const [ap,af]=locate(p.anchor);if(af){const a=localGeom(ap,af);A=W(ap,a.c||a.a)}}
+  const o=p.offset||{x:0,y:0,z:0};p.center={x:A.x+S.x+o.x,y:A.y+S.y+o.y,z:A.z+S.z+o.z};
+}
+const resolveAll=()=>prims.forEach(resolve);
+const pl=p=>p.workplane.length===2?p.workplane+'平面':(([rp,rf])=>rf?`${rp.name}·${rf.displayName}`:'XY平面')(locate(p.workplane));
+
+/* 长方体：对已设置倒角/圆角的棱边逐条做布尔切除 */
+function boxGeo(p){
+  const d=p.dimensions,h=[d.length/2,d.width/2,d.height/2];
+  let body=new Brush(new THREE.BoxGeometry(d.length,d.width,d.height));
+  p.subFeatures.edges.forEach(f=>{
+    const t=f.treatment;if(!t||t.type==='NONE'||!(t.size>0))return;
+    const i=+f.ref.split(':')[1];let A,o;
+    if(i<8){const m=i%4,z=i<4?1:-1;A=m%2;o=[[0,-1],[1,0],[0,1],[-1,0]][m];o=[o[0],o[1],z]}
+    else{A=2;o=[BC[i-8][0],BC[i-8][1],0]}
+    const q=new THREE.Quaternion().setFromEuler(A===0?new THREE.Euler(0,Math.PI/2,0):A===1?new THREE.Euler(-Math.PI/2,0,0):new THREE.Euler());
+    const ov=V3(...o),su=Math.round(ov.dot(V3(1,0,0).applyQuaternion(q))),sv=Math.round(ov.dot(V3(0,1,0).applyQuaternion(q)));
+    const c=Math.min(t.size,Math.min(...[0,1,2].filter(x=>x!==A).map(x=>2*h[x]))/2-0.01),len=2*h[A]+2;if(!(c>0))return;
+    let cg;
+    if(t.type==='CHAMFER'){const ang=Math.atan2(sv,su),tk=c+1,m=-c/Math.SQRT2+tk/2;
+      cg=new THREE.BoxGeometry(tk,4*c,len);cg.rotateZ(ang);cg.translate(Math.cos(ang)*m,Math.sin(ang)*m,0)}
+    else{
+      const sg=new THREE.BoxGeometry(c+1,c+1,len);sg.translate(su*(1-c)/2,sv*(1-c)/2,0);
+      const cy=new THREE.CylinderGeometry(c,c,len+2,24).rotateX(Math.PI/2);cy.translate(-c*su,-c*sv,0);
+      const sb=new Brush(sg),cb=new Brush(cy);sb.updateMatrixWorld();cb.updateMatrixWorld();cg=ev.evaluate(sb,cb,SUBTRACTION).geometry}
+    cg.applyQuaternion(q);cg.translate(o[0]*h[0],o[1]*h[1],o[2]*h[2]);
+    const cut=new Brush(cg);cut.updateMatrixWorld();body.updateMatrixWorld();body=ev.evaluate(body,cut,SUBTRACTION);
+  });
+  return body.geometry;
+}
+function geo(p){
+  const d=p.dimensions;let g;
+  if(p.type==='BOX')g=boxGeo(p);
+  else if(p.type==='CYLINDER')g=new THREE.CylinderGeometry(d.radius,d.radius,d.height,48).rotateX(Math.PI/2);
+  else if(p.type==='CONE')g=new THREE.CylinderGeometry(d.topRadius,d.radius,d.height,48).rotateX(Math.PI/2);
+  else if(p.type==='SPHERE')g=new THREE.SphereGeometry(d.radius,48,32);
+  else g=new THREE.CapsuleGeometry(d.radius,Math.max(d.height-2*d.radius,0.01),8,32).rotateX(Math.PI/2);
+  g.applyQuaternion(p.q);g.translate(p.center.x,p.center.y,p.center.z);return g;
+}
+
+/* 子要素枚举 (实体与切削孔各自独立展开) */
+function feats(p){
+  const hole=p.role==='HOLE',n=p.name;let i=0;
+  const mk=(dn,type,shape,ref)=>({id:`${n}_${type[0]}${++i}`,displayName:dn,type,shape,ref,tolerances:[]});
+  const F=[],E=[],Vx=[],A=[];
+  if(p.type==='BOX'){
+    [['顶面 (+Z)','+z'],['底面 (-Z)','-z'],['前面 (+Y)','+y'],['后面 (-Y)','-y'],['左面 (-X)','-x'],['右面 (+X)','+x']].forEach(([dn,r])=>F.push(mk((hole?'内壁 ':'')+dn,'FACE','plane','f:'+r)));
+    for(let k=0;k<12;k++)E.push(mk(`E${k+1} (${k<4?'顶边':k<8?'底边':'竖边'})`,'EDGE','edge','e:'+k));
+    for(let k=0;k<8;k++)Vx.push(mk('V'+(k+1),'VERTEX','vertex','v:'+k));
+  }else if(p.type==='SPHERE'){
+    F.push(mk(hole?'内球面':'球面','FACE','cyl','f:s'));Vx.push(mk('球心','VERTEX','vertex','v:c'));
+  }else{
+    const sn={CYLINDER:['内圆柱侧面','圆柱侧面'],CONE:['内圆锥侧面','圆锥侧面'],SLOT:['内槽侧面','胶囊侧面']}[p.type][hole?0:1];
+    const curved=p.type==='SLOT'?'cyl':'plane';
+    if(!hole)F.push(mk('顶面 (+Z)','FACE',curved,'f:top'),mk('底面 (-Z)','FACE',curved,'f:bot'));
+    F.push(mk(sn,'FACE','cyl','f:side'));
+    A.push(mk('中心轴线','AXIS','axis','a:0'));
+    if(p.type!=='SLOT')E.push(mk('顶部圆周边缘','EDGE','edge','e:top'),mk('底部圆周边缘','EDGE','edge','e:bot'));
+  }
+  return {faces:F,edges:E,vertices:Vx,axes:A};
+}
+
+/* 高亮几何 (局部坐标，Z 为拉伸轴) */
+function hl(p,f){
+  const d=p.dimensions,g=new THREE.Group(),c=V3(0,0,0),[k,a]=f.ref.split(':');
+  const add=(geom,pos)=>{const m=new THREE.Mesh(geom,hlMat);if(pos)m.position.copy(pos);m.renderOrder=10;g.add(m);return m};
+  const tube=(A,B)=>add(new THREE.TubeGeometry(new THREE.LineCurve3(A,B),1,.6,8));
+  const dot=pos=>add(new THREE.SphereGeometry(1.4,16,12),pos);
+  if(p.type==='BOX'){
+    const hx=d.length/2,hy=d.width/2,hz=d.height/2,cs=[[-1,-1],[1,-1],[1,1],[-1,1]];
+    if(k==='f'){const ax='xyz'.indexOf(a[1]),s=a[0]==='+'?1:-1,h=[hx,hy,hz][ax],n=[0,0,0];n[ax]=s;
+      add(new THREE.BoxGeometry(ax===0?.15:d.length,ax===1?.15:d.width,ax===2?.15:d.height),V3(n[0]*(h+.08),n[1]*(h+.08),n[2]*(h+.08)));c.set(n[0]*h,n[1]*h,n[2]*h)}
+    else if(k==='e'){const i=+a;if(i<8){const z=(i<4?1:-1)*hz,A=cs[i%4],B=cs[(i+1)%4];tube(V3(A[0]*hx,A[1]*hy,z),V3(B[0]*hx,B[1]*hy,z));dot(V3(A[0]*hx,A[1]*hy,z));dot(V3(B[0]*hx,B[1]*hy,z));c.set((A[0]+B[0])*hx/2,(A[1]+B[1])*hy/2,z)}
+      else{const q=cs[i-8];tube(V3(q[0]*hx,q[1]*hy,-hz),V3(q[0]*hx,q[1]*hy,hz));dot(V3(q[0]*hx,q[1]*hy,-hz));dot(V3(q[0]*hx,q[1]*hy,hz));c.set(q[0]*hx,q[1]*hy,0)}}
+    else{const i=+a,q=cs[i%4];dot(V3(q[0]*hx,q[1]*hy,(i<4?1:-1)*hz))}
+  }else if(p.type==='SPHERE'){
+    if(k==='f'){add(new THREE.SphereGeometry(d.radius+.1,48,32));c.set(d.radius,0,0)}else dot();
+  }else{
+    const h=d.height,rb=d.radius,rt=p.type==='CONE'?d.topRadius:d.radius,r=rb;
+    if(k==='a'){tube(V3(0,0,-h/2-6),V3(0,0,h/2+6));dot(V3(0,0,-h/2));dot(V3(0,0,h/2))}
+    else if(k==='e'){const top=a==='top',rr=top?rt:rb;add(new THREE.TorusGeometry(Math.max(rr,.2),.6,8,64),V3(0,0,top?h/2:-h/2));c.set(rr,0,top?h/2:-h/2)}
+    else if(p.type==='SLOT'){
+      const hh=h/2-r;
+      if(a==='side'){add(new THREE.CylinderGeometry(r+.1,r+.1,Math.max(h-2*r,.01),40,1,true).rotateX(Math.PI/2));c.set(r,0,0)}
+      else{const top=a==='top';add(new THREE.SphereGeometry(r+.1,32,16,0,Math.PI*2,0,Math.PI/2).rotateX(top?Math.PI/2:-Math.PI/2),V3(0,0,top?hh:-hh));c.set(0,0,top?h/2:-h/2)}
+    }else if(a==='side'){add(new THREE.CylinderGeometry(rt+.1,rb+.1,h,48,1,true).rotateX(Math.PI/2));c.set((rt+rb)/2,0,0)}
+    else{const top=a==='top';add(new THREE.CircleGeometry(Math.max(top?rt:rb,.2),48),V3(0,0,(top?1:-1)*(h/2+.1)));c.set(0,0,(top?1:-1)*h/2)}
+  }
+  return {g,c};
+}
+function place(p,obj){obj.quaternion.copy(p.q);obj.position.set(p.center.x,p.center.y,p.center.z);return obj}
+function showHL(){  /* 所有选中要素 (及悬停要素) 同时高亮 */
+  hlGroup.clear();
+  new Set([...sel,...(hov?[hov]:[])]).forEach(fid=>{const [p,f]=locate(fid);if(f)hlGroup.add(place(p,hl(p,f).g))});
+}
+function badge(letter){
+  const cv=document.createElement('canvas');cv.width=128;cv.height=64;const x=cv.getContext('2d');
+  x.fillStyle='#b4570f';x.beginPath();x.roundRect(4,4,120,56,10);x.fill();x.fillStyle='#fff';x.font='700 38px monospace';x.textAlign='center';x.textBaseline='middle';x.fillText(`-${letter}-`,64,34);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),depthTest:false,transparent:true}));sp.scale.set(12,6,1);sp.renderOrder=20;return sp;
+}
+function refreshBadges(){
+  badges.clear();
+  prims.forEach(p=>allFeats(p).forEach(f=>{if(!f.isDatum)return;const {c}=hl(p,f),sp=badge(f.isDatum);
+    sp.position.copy(c.applyQuaternion(p.q).add(V3(p.center.x,p.center.y,p.center.z)));badges.add(sp)}));
+}
+function rebuild(){
+  resolveAll();
+  if(result){scene.remove(result);result.geometry.dispose();result=null}
+  ghosts.clear();let acc=null;
+  try{for(const p of prims){
+    const b=new Brush(geo(p),solidMat);b.updateMatrixWorld();
+    if(p.role==='SOLID')acc=acc?ev.evaluate(acc,b,ADDITION):b;
+    else{ghosts.add(new THREE.Mesh(geo(p),ghostMat));if(acc)acc=ev.evaluate(acc,b,SUBTRACTION)}
+  }}catch(e){console.error('CSG 计算失败',e)}
+  if(acc){acc.material=solidMat;result=acc;scene.add(acc)}
+  refreshBadges();showHL();
+}
+
+/* ---------- 左侧：实体参数 / 编辑模式 ---------- */
+function dimsForm(vals){
+  $('#dims').innerHTML=FIELDS[$('#type').value].map(([k,l,v])=>`<div><label for="d_${k}">${l}</label><input id="d_${k}" type="number" min="0" step="0.5" value="${vals?.[k]??v}"></div>`).join('');
+}
+function refPrims(){const lim=editId?prims.findIndex(x=>x.id===editId):prims.length;return prims.slice(0,lim<0?prims.length:lim)}
+function refreshRefs(){   /* 动态填充：全局基准面 + 现有实体表面 */
+  const wp=$('#wp'),cur=wp.value||'XY',faces=refPrims().flatMap(p=>p.subFeatures.faces.filter(f=>localGeom(p,f).n).map(f=>`<option value="${f.id}">${p.name} / ${f.displayName}</option>`));
+  wp.innerHTML='<optgroup label="--- 全局基准面 ---"><option value="XY">全局 XY 平面 (沿 Z 拉伸)</option><option value="YZ">全局 YZ 平面 (沿 X 拉伸)</option><option value="XZ">全局 XZ 平面 (沿 Y 拉伸)</option></optgroup>'+(faces.length?`<optgroup label="--- 现有实体表面 ---">${faces.join('')}</optgroup>`:'');
+  if([...wp.options].some(o=>o.value===cur))wp.value=cur;
+  refreshAnchor();
+}
+function refreshAnchor(){   /* 定位参考点：全局原点 / 参考面中心 / 任意现有顶点或面中心 */
+  const an=$('#anchor'),cur=an.value||'global',isFace=$('#wp').value.length>2;
+  const pts=refPrims().flatMap(p=>allFeats(p).filter(f=>f.shape==='vertex'||f.type==='FACE').map(f=>`<option value="${f.id}">${p.name} / ${f.displayName}${f.shape==='vertex'?'（顶点）':'（面中心）'}</option>`));
+  an.innerHTML=`<option value="global">全局原点 (0,0,0)</option>${isFace?'<option value="faceC">所选参考面的中心</option>':''}${pts.length?`<optgroup label="--- 现有特征 ---">${pts.join('')}</optgroup>`:''}`;
+  an.value=[...an.options].some(o=>o.value===cur)?cur:(isFace?'faceC':'global');
+}
+function readForm(){
+  const type=$('#type').value,n=id=>parseFloat($(id).value),c={x:n('#cx'),y:n('#cy'),z:n('#cz')},dims={};
+  if([c.x,c.y,c.z].some(isNaN))return null;
+  for(const [k] of FIELDS[type]){const v=n('#d_'+k);if(isNaN(v)||v<0||(v===0&&k!=='topRadius'))return null;dims[k]=v}
+  return {type,role:document.querySelector('[name=role]:checked').value,workplane:$('#wp').value,anchor:$('#anchor').value,offset:c,dimensions:dims};
+}
+function fillForm(p){
+  $('#type').value=p.type;document.querySelector(`[name=role][value=${p.role}]`).checked=true;
+  refreshRefs();$('#wp').value=p.workplane;refreshAnchor();$('#anchor').value=p.anchor;
+  $('#cx').value=p.offset.x;$('#cy').value=p.offset.y;$('#cz').value=p.offset.z;dimsForm(p.dimensions);
+}
+function setMode(){
+  const e=!!editId;$('#mbadge').hidden=!e;$('#gen').hidden=e;$('#exit').hidden=!e;$('#type').disabled=e;
+  document.querySelectorAll('[name=role]').forEach(r=>r.disabled=e);
+  $('#msg').textContent=e?'编辑模式：修改任意数值将实时重算模型。类型与布尔角色不可更改。':'切削孔只会切除其之前生成的实体，请先生成实体。';
+}
+function startEdit(id){editId=id;fillForm(prims.find(p=>p.id===id));setMode();renderTree()}
+$('#type').onchange=()=>dimsForm();dimsForm();
+$('#gen').onclick=()=>{
+  const v=readForm();if(!v){$('#msg').textContent='参数无效：请输入数字，且尺寸必须大于 0。';return}
+  const id='p'+(++counter),p={id,name:`${NAMES[v.type][v.role==='HOLE'?1:0]}_${String(counter).padStart(2,'0')}`,...v};
+  p.subFeatures=feats(p);p.q=new THREE.Quaternion();p.center={x:0,y:0,z:0};prims.push(p);rebuild();render();$('#msg').textContent=`已生成 ${p.name}。点击设计树中的名称可进入编辑模式。`;
+};
+$('#exit').onclick=()=>{editId=null;setMode();renderTree()};
+$('#pform').addEventListener('input',e=>{   /* 双向绑定：编辑模式下实时重算 */
+  if(e.target.id==='wp'){refreshAnchor();$('#anchor').value=$('#wp').value.length>2?'faceC':'global'}
+  if(!editId)return;const v=readForm(),p=prims.find(x=>x.id===editId);if(!v||!p)return;
+  Object.assign(p,{workplane:v.workplane,anchor:v.anchor,offset:v.offset,dimensions:v.dimensions});rebuild();renderProc();renderJson();
+});
+
+/* ---------- 左上角悬浮设计树 ---------- */
+function renderTree(){
+  $('#ftb').innerHTML=prims.length?prims.map(p=>{
+    const s=p.subFeatures,hole=p.role==='HOLE',open=p.open!==false;
+    const grp=(t,l)=>l?.length?`<div class="gt">${t} (${l.length})</div>`+l.map(f=>`<div class="it ${sel.includes(f.id)?'on':''}" tabindex="0" role="button" data-f="${f.id}"><input type="checkbox" class="ck" tabindex="-1" ${sel.includes(f.id)?'checked':''} aria-label="多选">${f.displayName}${f.treatment&&f.treatment.type!=='NONE'?` <i>[${f.treatment.type==='CHAMFER'?'C':'R'}${f.treatment.size}]</i>`:''}${f.isDatum?`<span class="dt">[-${f.isDatum}-]</span>`:''}${f.tolerances.length?' ●':''}</div>`).join(''):'';
+    return `<div class="ph ${editId===p.id?'ed':''}"><button data-tg="${p.id}" aria-label="展开或折叠">${open?'▾':'▸'}</button><span class="pn" tabindex="0" data-p="${p.id}">${hole?'⭕':'📦'} ${p.name} [${hole?'空心':'实心'} | ${pl(p)}]</span><button data-del="${p.id}" aria-label="删除 ${p.name}">✕</button></div>`+
+      (open?grp('面',s.faces)+grp(p.type==='BOX'?'棱边':hole?'顶底圆周边缘':'圆周边缘',s.edges)+grp('轴线',s.axes)+grp('顶点',s.vertices):'');
+  }).join(''):'<p class="hint" style="margin:4px 4px 8px">暂无特征，请在左侧生成实体。</p>';
+}
+const ftb=$('#ftb');
+ftb.addEventListener('click',e=>{
+  const t=e.target.closest('[data-tg]'),d=e.target.closest('[data-del]'),n=e.target.closest('[data-p]'),it=e.target.closest('.it');
+  if(t){const p=prims.find(x=>x.id===t.dataset.tg);p.open=p.open===false;renderTree()}
+  else if(d){const p=prims.find(x=>x.id===d.dataset.del);if(editId===p.id){editId=null;setMode()}
+    const ids=allFeats(p).map(f=>f.id);sel=sel.filter(x=>!ids.includes(x));prims=prims.filter(x=>x!==p);rebuild();render()}
+  else if(n)startEdit(n.dataset.p);
+  else if(it){const f=it.dataset.f,multi=e.ctrlKey||e.metaKey||e.shiftKey||e.target.classList.contains('ck');
+    sel=multi?(sel.includes(f)?sel.filter(x=>x!==f):[...sel,f]):[f];showHL();renderTree();renderProc()}  /* 单击=单选；Ctrl/Shift/复选框=多选 */
+});
+ftb.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[tabindex]')){e.preventDefault();e.target.click()}});
+ftb.addEventListener('mouseover',e=>{const it=e.target.closest('.it');hov=it?it.dataset.f:null;showHL()});
+ftb.addEventListener('mouseleave',()=>{hov=null;showHL()});
+$('#ftt').onclick=()=>{const s=$('#ft').classList.toggle('shut');$('#ftt').textContent=s?'▸ 展开':'▾ 折叠'};
+
+/* ---------- 工艺公差面板 ---------- */
+const datumLetters=()=>new Set(prims.flatMap(p=>allFeats(p).map(f=>f.isDatum).filter(Boolean)));  /* 全局有效基准列表 */
+const freeLetter=()=>{const u=datumLetters();return ACTIVE.find(x=>!u.has(x))};
+const unitSel=t=>`<select data-k="unit" aria-label="单位">${UNITS.map(([v,l])=>`<option value="${v}" ${t.unit===v?'selected':''}>${l}</option>`).join('')}</select>`;
+const numIn=(k,v,ph)=>`<input data-k="${k}" type="number" step="any" value="${v??''}" placeholder="${ph}" aria-label="${ph}">`;
+function reqRow(f,t,i){
+  const act=datumLetters(),G='style="grid-template-columns:1fr 1fr 118px;margin-top:6px"';let body;
+  if(t.type==='FIT_CODE')body=`<input data-k="fitCode" list="fits" value="${t.fitCode??''}" placeholder="配合代号 如 H7/g6" aria-label="配合代号" style="margin-top:6px">`;
+  else if(t.type==='COATING')body=`<div class="row" ${G}><select data-k="coating" aria-label="涂覆类型">${COATINGS.map(c=>`<option ${t.coating===c?'selected':''}>${c}</option>`).join('')}</select>${numIn('upper',t.upper,'厚度')}${unitSel(t)}</div>`;
+  else if(t.type==='HARDNESS')body=`<div class="row" ${G}>${numIn('lower',t.lower,'最小 如 58')}${numIn('upper',t.upper,'最大 如 62')}${unitSel(t)}</div>`;
+  else body=`<div class="row" ${G}>${numIn('upper',t.upper,'上公差 +0.02')}${numIn('lower',t.lower,'下公差 -0.01')}${unitSel(t)}</div>`;
+  const dat=NEEDS_DATUM.includes(t.type)?`<label>基准引用</label><select data-k="datumRef" aria-label="基准引用"><option value="">[无基准]</option>${ACTIVE.map(x=>`<option value="${x}" ${t.datumRef===x?'selected':''} ${act.has(x)||t.datumRef===x?'':'disabled'}>[基准 ${x}]${act.has(x)?'':'（未设置）'}</option>`).join('')}</select>`:'';
+  return `<div class="req" data-row data-f="${f.id}" data-i="${i}">
+  <div class="row" style="grid-template-columns:1fr 30px"><select data-k="type" aria-label="要求类型">${GROUPS.map(([g,l])=>`<optgroup label="${g}">${l.map(o=>`<option value="${o}" ${t.type===o?'selected':''}>${TN[o]}</option>`).join('')}</optgroup>`).join('')}</select>
+  <button data-rm aria-label="删除此要求">✕</button></div>${body}${dat}</div>`;
+}
+let pairVal=0.02;
+function pairCard(S){
+  const [[p1,f1],[p2,f2]]=S,round=x=>x==='cyl'||x==='axis';
+  if(f1.shape==='vertex'||f2.shape==='vertex')return '<div class="card pair"><b>双要素配合公差</b><p class="hint">顶点不能参与配合公差，请重新选择。</p></div>';
+  return `<div class="card pair"><b>双要素配合公差</b>
+  <p class="hint">被测要素：<b>${p1.name} / ${f1.displayName}</b><br>基准要素：<b>${p2.name} / ${f2.displayName}</b>${f2.isDatum?` [-${f2.isDatum}-]`:'（添加时自动设为基准）'}</p>
+  <div class="row" style="grid-template-columns:1fr 120px"><input id="pv" type="number" step="any" min="0" value="${pairVal}" aria-label="公差值 (mm)"><button data-swap>交换被测 / 基准</button></div>
+  <div class="row c2" style="margin-top:8px"><button class="pri" style="margin-top:0" data-pair="PARALLELISM">两面平行度</button><button class="pri" style="margin-top:0" data-pair="PERPENDICULARITY">两面垂直度</button></div>
+  ${round(f1.shape)&&round(f2.shape)?'<button class="wide" data-pair="CONCENTRICITY">两要素同轴度</button>':''}</div>`;
+}
+const kv=(k,v)=>`<div class="kv"><span>${k}</span><b>${v}</b></div>`;
+const fx=v=>'('+[v.x,v.y,v.z].map(n=>(Math.abs(n)<5e-4?0:n).toFixed(3)).join(', ')+')';
+function coordHtml(p,f){   /* 选中要素的世界坐标检查 */
+  const g=localGeom(p,f),w=v=>W(p,v);let h='';
+  if(f.shape==='vertex')h=kv('顶点坐标 (X, Y, Z)',fx(w(g.a)));
+  else if(g.a&&g.b){const A=w(g.a),B=w(g.b);h=kv('起点坐标 (X1, Y1, Z1)',fx(A))+kv('终点坐标 (X2, Y2, Z2)',fx(B))+kv(f.shape==='axis'?'轴线总长 (mm)':'棱边总长 (mm)',A.distanceTo(B).toFixed(3))}
+  else if(g.circ)h=kv('圆心坐标 (X, Y, Z)',fx(w(g.c)))+kv('半径 (mm)',g.r.toFixed(3))+kv('周长 (mm)',(2*Math.PI*g.r).toFixed(3));
+  else if(g.n){const n=g.n.clone().applyQuaternion(p.q).normalize();
+    h=kv('面中心坐标 (X, Y, Z)',fx(w(g.c)))+kv('法向量 (Normal)',fx(n))+g.pts.map((q,i)=>kv(`${p.type==='BOX'?'边界角点':'边界象限点'} P${i+1}`,fx(w(q)))).join('')}
+  else if(g.c)h=kv('面中心坐标 (X, Y, Z)',fx(w(g.c)))+'<p class="hint" style="margin:2px 0">曲面：法向量沿表面连续变化。</p>';
+  return `<div class="coord">${h}</div>`;
+}
+function treatCard(p,f){
+  if(f.shape!=='edge')return '';
+  if(p.type!=='BOX')return '<div class="coord"><b>棱边特征处理</b><p class="hint" style="margin:2px 0">圆周边缘暂不支持倒角 / 倒圆角。</p></div>';
+  const t=f.treatment||{type:'NONE',size:2};
+  return `<div class="coord"><b>棱边特征处理</b><div class="row c2" style="margin-top:6px"><select data-et data-of="${f.id}" aria-label="棱边处理方式">${[['NONE','无'],['CHAMFER','倒角 (Chamfer)'],['FILLET','倒圆角 (Fillet)']].map(([v,l])=>`<option value="${v}" ${t.type===v?'selected':''}>${l}</option>`).join('')}</select><input data-es data-of="${f.id}" type="number" min="0" step="0.5" value="${t.size}" placeholder="尺寸 (mm)" aria-label="尺寸 (mm)"></div><p class="hint" style="margin:4px 0 0">尺寸 (mm)：倒角如 C2，圆角如 R3，修改后立即生效。</p></div>`;
+}
+function setTreat(fid,patch){
+  const [,f]=locate(fid);if(!f)return;f.treatment={type:'NONE',size:2,...f.treatment,...patch};if(!(f.treatment.size>=0))f.treatment.size=0;
+  rebuild();renderTree();renderJson();
+}
+function renderProc(){
+  const S=sel.map(locate).filter(([p,f])=>f),el=$('#proc');
+  if(!S.length){el.innerHTML='<p class="hint">在左上角设计树中点击要素查看坐标并设置工艺要求；按住 Ctrl / Shift 点击，或勾选复选框，可多选。选 2 个要素时可设置双要素配合公差。</p>';return}
+  el.innerHTML=(S.length===2?pairCard(S):'')+S.map(([p,f])=>{
+    const head=`<div class="chip">${p.name} / ${f.displayName}${f.isDatum?` <b>[-${f.isDatum}-]</b>`:''}</div>`+coordHtml(p,f);
+    if(f.shape==='vertex')return `<div class="card">${head}<p class="hint">顶点不设工艺要求，请选择面、边或轴线。</p></div>`;
+    return `<div class="card">${head}${treatCard(p,f)}
+      ${f.type==='EDGE'?'':`<div class="row c4">${ACTIVE.map(x=>`<button data-datum="${x}" data-of="${f.id}">${f.isDatum===x?'✓ ':''}基准 ${x}</button>`).join('')}<button data-datum="" data-of="${f.id}">取消基准</button></div>`}
+      ${f.tolerances.length?f.tolerances.map((t,i)=>reqRow(f,t,i)).join(''):'<p class="hint">暂无工艺要求。</p>'}
+      <button class="pri" data-add="${f.id}">+ 添加新要求</button></div>`}).join('')+'<button class="wide" data-clr>清除选择</button>';
+}
+const proc=$('#proc');
+const rowOf=el=>{const r=el.closest('[data-row]');return r?[locate(r.dataset.f)[1],+r.dataset.i]:[]};
+function commit(el){   /* 立即写回当前要素的 tolerances 数组 */
+  const [f,i]=rowOf(el);if(!f)return;const t=f.tolerances[i],k=el.dataset.k;
+  if(el.tagName==='INPUT'){if(k==='fitCode')t.fitCode=el.value.trim();else{const v=parseFloat(el.value);t[k]=isNaN(v)?null:v}}
+  else{t[k]=el.value;
+    if(k==='type'){t.unit=defUnit(t.type);if(!NEEDS_DATUM.includes(t.type))delete t.datumRef;
+      if(t.type==='COATING'&&!t.coating)t.coating=COATINGS[0];if(t.type==='FIT_CODE'&&!t.fitCode)t.fitCode='H7/g6'}
+    if(k==='datumRef'&&!t.datumRef)delete t.datumRef}
+  renderTree();renderJson();
+}
+proc.addEventListener('input',e=>{
+  if(e.target.dataset.es!==undefined){setTreat(e.target.dataset.of,{size:parseFloat(e.target.value)});return}
+  if(e.target.id==='pv'){pairVal=parseFloat(e.target.value)||0;return}
+  if(e.target.tagName==='INPUT'&&e.target.dataset.k)commit(e.target);
+});
+proc.addEventListener('change',e=>{
+  if(e.target.dataset.et!==undefined){setTreat(e.target.dataset.of,{type:e.target.value});renderProc();return}
+  const k=e.target.dataset.k;if(!k)return;commit(e.target);if(k==='type')renderProc();
+});
+proc.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.clr!==undefined){sel=[];showHL();render();return}
+  if(b.dataset.add){const [,f]=locate(b.dataset.add);f.tolerances.push({type:defType[f.shape],upper:null,lower:null,unit:'mm'})}
+  else if(b.dataset.rm!==undefined){const [f,i]=rowOf(b);f.tolerances.splice(i,1)}
+  else if(b.dataset.swap!==undefined){sel=[sel[1],sel[0]];showHL()}
+  else if(b.dataset.pair){
+    const [[,f1],[,f2]]=sel.map(locate);if(!(pairVal>0)){$('#msg').textContent='请先输入大于 0 的公差值。';return}
+    if(!f2.isDatum){const L=freeLetter();if(!L){$('#msg').textContent='基准 A–C 已全部占用，请先取消一个基准。';return}f2.isDatum=L;refreshBadges()}
+    f1.tolerances.push({type:b.dataset.pair,upper:pairVal,lower:null,unit:'mm',datumRef:f2.isDatum})}
+  else if(b.dataset.datum!==undefined){const [,f]=locate(b.dataset.of),L=b.dataset.datum;
+    prims.forEach(q=>allFeats(q).forEach(x=>{if(L&&x.isDatum===L)delete x.isDatum}));if(L)f.isDatum=L;else delete f.isDatum;refreshBadges()}
+  render();
+});
+
+function renderJson(){
+  $('#json').textContent=JSON.stringify(prims.map(({subFeatures:sf,open,q,...r})=>({...r,subFeatures:Object.fromEntries(Object.entries(sf).map(([k,l])=>[k,l.map(({shape,ref,...f})=>f)]))})),null,1);
+}
+function render(){refreshRefs();renderTree();renderProc();renderJson()}
+$('#theme').onclick=()=>{const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=dark?'light':'dark'};
+render();
+</script>
+</body>
+</html>
